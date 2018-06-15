@@ -126,33 +126,6 @@ class SmilePainter extends CustomPainter {
     canvas.drawCircle(centerPoint, radius, circlePaint);
     //---------------------------------------------------------------
 
-    //draw eyes---------------------------------------------------
-    //ele calc
-    final leftEyeX = startingX + oneThirdOfDia;
-    final eyeY = startingY + (oneThirdOfDia + oneThirdOfDiaByTwo / 4);
-    final rightEyeX = startingX + (oneThirdOfDia * 2);
-
-    final leftEyePoint = Offset(leftEyeX, eyeY);
-    final rightEyePoint = Offset(rightEyeX, eyeY);
-
-    final Paint leftEyePaintFill = genGradientPaint(
-      new Rect.fromCircle(center: leftEyePoint, radius: eyeRadius),
-      currentState.startColor,
-      currentState.endColor,
-      PaintingStyle.fill,
-    );
-
-    final Paint rightEyePaintFill = genGradientPaint(
-      new Rect.fromCircle(center: rightEyePoint, radius: eyeRadius),
-      currentState.startColor,
-      currentState.endColor,
-      PaintingStyle.fill,
-    );
-
-    canvas.drawCircle(leftEyePoint, eyeRadius, leftEyePaintFill);
-    canvas.drawCircle(rightEyePoint, eyeRadius, rightEyePaintFill);
-    //---------------------------------------------------------------
-
     //draw curve with path ------------------------------------------
     canvas.drawPath(getSmilePath(currentState), circlePaint);
 
@@ -193,6 +166,44 @@ class SmilePainter extends CustomPainter {
 //        Offset(endingX - oneThirdOfDiaByTwo, endingY), debugPaint);
 //    canvas.drawRect(Rect.fromLTRB(leftSmileX, smileY, rightSmileX, smileBottomY), boxPaint ..color=Colors.red);
     //---------------------------------------------------------------
+
+    //draw eyes---------------------------------------------------
+    //ele calc
+    final leftEyeX = startingX + oneThirdOfDia;
+    final eyeY = startingY + (oneThirdOfDia + oneThirdOfDiaByTwo / 4);
+    final rightEyeX = startingX + (oneThirdOfDia * 2);
+
+    final leftEyePoint = Offset(leftEyeX, eyeY);
+    final rightEyePoint = Offset(rightEyeX, eyeY);
+
+    final Paint leftEyePaintFill = genGradientPaint(
+      new Rect.fromCircle(center: leftEyePoint, radius: eyeRadius),
+      currentState.startColor,
+      currentState.endColor,
+      PaintingStyle.fill,
+    );
+
+    final Paint rightEyePaintFill = genGradientPaint(
+      new Rect.fromCircle(center: rightEyePoint, radius: eyeRadius),
+      currentState.startColor,
+      currentState.endColor,
+      PaintingStyle.fill,
+    );
+
+//    var eyeRadiusbythree = eyeRadius/3;
+//
+//    Path clipPath = new Path();
+//    clipPath.moveTo(leftEyeX-eyeRadiusbythree, eyeY-(eyeRadiusbythree*2));
+
+//    canvas.save();
+//    canvas.clipPath(path)
+//    canvas.clipRect(Rect.fromLTRB(leftEyeX-eyeRadius, eyeY, leftEyeX+(eyeRadius*2), eyeY + eyeRadius));
+    canvas.drawCircle(leftEyePoint, eyeRadius, leftEyePaintFill);
+//    canvas.restore();
+    canvas.drawCircle(rightEyePoint, eyeRadius, rightEyePaintFill);
+
+    //---------------------------------------------------------------
+
   }
 
   Path getSmilePath(ReviewState state) {

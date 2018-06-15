@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:review/SmilePainter.dart';
+import 'package:review/ChooserPainter.dart';
 
 void main() => runApp(new MyApp());
 
@@ -80,6 +81,8 @@ class _MyReviewPageState extends State<MyReviewPage> with TickerProviderStateMix
           slideValue = animation.value.round();
         });
       });
+
+    animation.animateTo(slideValue.toDouble());
   }
 
   @override
@@ -105,57 +108,57 @@ class _MyReviewPageState extends State<MyReviewPage> with TickerProviderStateMix
                 MediaQuery.of(context).size.width / 2),
             painter: SmilePainter(slideValue),
           ),
-//          Slider(
-//            min: 0.0,
-//            max: 400.0,
-//            value: slideValue.toDouble(),
-//            onChanged: (double newValue) {
-//              setState(() {
-//                slideValue = newValue.round();
-//              });
-//            },
-//          ),
-          new SizedBox(
-            height: 200.0,
-            child: new NotificationListener(
-              onNotification: (ScrollNotification notification){
-                if(!notification.metrics.atEdge){
-                  print('_MyReviewPageState.build ' + MediaQuery.of(context).size.width.toString() + " " + notification.metrics.pixels.toString());
-                }
-
-              },
-              child: PageView.builder(
-                pageSnapping: true,
-                onPageChanged: (int value) {
-                  print('_MyReviewPageState._onPageChanged ' + value.toString());
-                    animation.animateTo(value*100.0);
-                },
-                controller: pageControl,
-                itemCount: 4,
-                physics: new AlwaysScrollableScrollPhysics(),
-                itemBuilder: (context, index) {
-                  return new Container(
-                      decoration: new BoxDecoration(
-                        gradient: new LinearGradient(
-                            colors: [
-                              reviewItems[index % 4].startColor,
-                              reviewItems[index % 4].endColor
-                            ]
-                        ),
-                      ),
-                      alignment: Alignment.center,
-                      child: new Text(
-                        reviewItems[index % 4].title,
-                        style: textStyle,
-                      ));
-                },
-              ),
-            ),
+          Slider(
+            min: 0.0,
+            max: 400.0,
+            value: slideValue.toDouble(),
+            onChanged: (double newValue) {
+              setState(() {
+                slideValue = newValue.round();
+              });
+            },
           ),
-//            CustomPaint(
-//              size: Size(MediaQuery.of(context).size.width, MediaQuery.of(context).size.width*3/4),
-//              painter: ChooserPainter(),
-//            )
+//          new SizedBox(
+//            height: 200.0,
+//            child: new NotificationListener(
+//              onNotification: (ScrollNotification notification){
+//                if(!notification.metrics.atEdge){
+//                  print('_MyReviewPageState.build ' + MediaQuery.of(context).size.width.toString() + " " + notification.metrics.pixels.toString());
+//                }
+//
+//              },
+//              child: PageView.builder(
+//                pageSnapping: true,
+//                onPageChanged: (int value) {
+//                  print('_MyReviewPageState._onPageChanged ' + value.toString());
+//                    animation.animateTo(value*100.0);
+//                },
+//                controller: pageControl,
+//                itemCount: 4,
+//                physics: new AlwaysScrollableScrollPhysics(),
+//                itemBuilder: (context, index) {
+//                  return new Container(
+//                      decoration: new BoxDecoration(
+//                        gradient: new LinearGradient(
+//                            colors: [
+//                              reviewItems[index % 4].startColor,
+//                              reviewItems[index % 4].endColor
+//                            ]
+//                        ),
+//                      ),
+//                      alignment: Alignment.center,
+//                      child: new Text(
+//                        reviewItems[index % 4].title,
+//                        style: textStyle,
+//                      ));
+//                },
+//              ),
+//            ),
+//          ),
+            CustomPaint(
+              size: Size(MediaQuery.of(context).size.width, MediaQuery.of(context).size.width*3/4),
+              painter: ChooserPainter(),
+            )
         ],
       ),
     );
