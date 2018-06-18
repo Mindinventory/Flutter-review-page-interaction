@@ -157,7 +157,7 @@ class _MyReviewPageState extends State<MyReviewPage> with TickerProviderStateMix
 //          ),
             CustomPaint(
               size: Size(MediaQuery.of(context).size.width, MediaQuery.of(context).size.width*3/4),
-              painter: ChooserPainter(),
+              painter: ChooserPainter(slideValue),
             )
         ],
       ),

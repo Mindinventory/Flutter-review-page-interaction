@@ -238,15 +238,15 @@ class SmilePainter extends CustomPainter {
 }
 
 class ReviewState {
+
+  //smile points
   Offset leftOffset;
+  Offset centerOffset;
+  Offset rightOffset;
 
   Offset leftHandle;
-
-  Offset centerOffset;
-
   Offset rightHandle;
 
-  Offset rightOffset;
 
   Color startColor;
   Color endColor;
