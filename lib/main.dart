@@ -90,34 +90,50 @@ class _MyReviewPageState extends State<MyReviewPage> with TickerProviderStateMix
     var textStyle = new TextStyle(color: Colors.white, fontSize: 24.00);
     return Container(
       margin: MediaQuery.of(context).padding,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text(
-                "How was your experience with us?",
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.headline,
+      child: new GestureDetector(
+        onPanStart: (DragStartDetails details){
+          print('_MyReviewPageState.build onPanStart');
+        },
+        onPanDown: (DragDownDetails details){
+          print('_MyReviewPageState.build onPanDown');
+        },
+        onPanUpdate: (DragUpdateDetails details){
+          print('_MyReviewPageState.build onPanUpdate {$details.delta}');
+        },
+        onPanCancel: (){
+          print('_MyReviewPageState.build onPanCancel');
+        },
+        onPanEnd: (DragEndDetails details){
+          print('_MyReviewPageState.build onPanEnd');
+        },
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  "How was your experience with us?",
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.headline,
+                ),
               ),
             ),
-          ),
-          CustomPaint(
-            size: Size(MediaQuery.of(context).size.width,
-                MediaQuery.of(context).size.width / 2),
-            painter: SmilePainter(slideValue),
-          ),
-          Slider(
-            min: 0.0,
-            max: 400.0,
-            value: slideValue.toDouble(),
-            onChanged: (double newValue) {
-              setState(() {
-                slideValue = newValue.round();
-              });
-            },
-          ),
+            CustomPaint(
+              size: Size(MediaQuery.of(context).size.width,
+                  MediaQuery.of(context).size.width / 2),
+              painter: SmilePainter(slideValue),
+            ),
+            Slider(
+              min: 0.0,
+              max: 400.0,
+              value: slideValue.toDouble(),
+              onChanged: (double newValue) {
+                setState(() {
+                  slideValue = newValue.round();
+                });
+              },
+            ),
 //          new SizedBox(
 //            height: 200.0,
 //            child: new NotificationListener(
@@ -155,11 +171,12 @@ class _MyReviewPageState extends State<MyReviewPage> with TickerProviderStateMix
 //              ),
 //            ),
 //          ),
-            CustomPaint(
-              size: Size(MediaQuery.of(context).size.width, MediaQuery.of(context).size.width*3/4),
-              painter: ChooserPainter(slideValue),
-            )
-        ],
+              CustomPaint(
+                size: Size(MediaQuery.of(context).size.width, MediaQuery.of(context).size.width*3/4),
+                painter: ChooserPainter(slideValue),
+              )
+          ],
+        ),
       ),
     );
   }

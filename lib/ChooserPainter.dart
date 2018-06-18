@@ -53,52 +53,81 @@ class ChooserPainter extends CustomPainter {
 
   ChooserPainter(int slideValue) : slideValue = slideValue;
 
+  static var center = 270.0;
+  static var angle = 45.0;
+
+  var angleInRadians = degreeToRadians(angle);
+
+  static var centerItemAngle = degreeToRadians(center-(angle/2));
+  static var leftItemAngle = centerItemAngle - degreeToRadians(angle);
+  static var rightItemAngle = centerItemAngle + degreeToRadians(angle);
+
+
+
   @override
   void paint(Canvas canvas, Size size) {
     var mainRect = Rect.fromLTRB(0.0, 0.0, size.width, size.height);
-    canvas.drawRect(mainRect, debugPaint);
+//    canvas.drawRect(mainRect, debugPaint);
 
-    var center = 270.0;
-    var angle = 50.0;
+    //common calc
+    double centerX = size.width/2;
+    double centerY = size.height*1.5;
+    double radius =  sqrt((size.width*size.width)/2);
 
-    var minSize = size.width*1.8;
+    //for white arc at bottom
+    double leftX = centerX-radius;
+    double topY = centerY-radius;
+    double rightX = centerX+radius;
+    double bottomY = centerY+radius;
 
-    var xoffSet = (size.width-minSize)/2;
-    var yOffSet = 0.0;//(size.height-minSize)/2;
+    //for items
+    double radius2 =  radius*1.5;
+    double leftX2 = centerX-radius2;
+    double topY2 = centerY-radius2;
+    double rightX2 = centerX+radius2;
+    double bottomY2 = centerY+radius2;
 
-    var angleInRadians = degreeToRadians(angle);
+    //for shadow
+    double radius3 =  radius*1.06;
+    double leftX3 = centerX-radius3;
+    double topY3 = centerY-radius3;
+    double rightX3 = centerX+radius3;
+    double bottomY3 = centerY+radius3;
 
-    var centerItemAngle = degreeToRadians(center-(angle/2));
-    var leftItemAngle = centerItemAngle - degreeToRadians(angle);
-    var rightItemAngle = centerItemAngle + degreeToRadians(angle);
+    var arcRect = Rect.fromLTRB(leftX2, topY2, rightX2, bottomY2);
 
-
+    var dummyRect = Rect.fromLTRB(0.0,0.0,size.width*0.2,size.height);
 
     ughPaint = new Paint()
       ..style = PaintingStyle.fill
-      ..shader = ughGradient.createShader(mainRect);
-    canvas.drawArc(Rect.fromLTRB(xoffSet, yOffSet, xoffSet+minSize, yOffSet+minSize), leftItemAngle, angleInRadians, true, ughPaint);
+      ..shader = ughGradient.createShader(dummyRect);
+    canvas.drawArc(arcRect, leftItemAngle, angleInRadians, true, ughPaint);
+
 
     okPaint = new Paint()
       ..style = PaintingStyle.fill
-      ..shader = okGradient.createShader(mainRect);
-    canvas.drawArc(Rect.fromLTRB(xoffSet, yOffSet, xoffSet+minSize, yOffSet+minSize), centerItemAngle, angleInRadians, true, okPaint);
+      ..shader = okGradient.createShader(dummyRect);
+    canvas.drawArc(arcRect, centerItemAngle, angleInRadians, true, okPaint);
+
 
     goodPaint = new Paint()
       ..style = PaintingStyle.fill
-      ..shader = goodGradient.createShader(mainRect);
+      ..shader = goodGradient.createShader(dummyRect);
 
-    canvas.drawArc(Rect.fromLTRB(xoffSet, yOffSet, xoffSet+minSize, yOffSet+minSize), rightItemAngle, angleInRadians, true, goodPaint);
+    canvas.drawArc(arcRect, rightItemAngle, angleInRadians, true, goodPaint);
 
+    Path shadowPath = new Path();
+    shadowPath.addArc(Rect.fromLTRB(leftX3, topY3, rightX3, bottomY3), degreeToRadians(180.0), degreeToRadians(180.0));
+    canvas.drawShadow(shadowPath, Colors.black.withAlpha(220), 8.0, false);
 
-    //draw bottom white   part
-    canvas.drawArc(Rect.fromLTRB(xoffSet+(minSize/4), yOffSet+(minSize/4), xoffSet+(minSize*3/4), yOffSet+(minSize*3/4)), leftItemAngle, angleInRadians*3, true, whitePaint);
+    //bottom white arc
+    canvas.drawArc(Rect.fromLTRB(leftX, topY, rightX, bottomY), degreeToRadians(180.0), degreeToRadians(180.0), true, whitePaint);
 
   }
 
   @override
   bool shouldRepaint(CustomPainter oldDelegate) {
-    return false;
+    return true;
   }
 
   static double degreeToRadians(double degree){
