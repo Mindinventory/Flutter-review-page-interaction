@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:review/SmilePainter.dart';
 import 'package:review/ChooserPainter.dart';
@@ -29,14 +31,13 @@ class MyReviewPage extends StatefulWidget {
   _MyReviewPageState createState() => new _MyReviewPageState();
 }
 
-class _MyReviewPageState extends State<MyReviewPage> with TickerProviderStateMixin{
-
-  final PageController pageControl =
-      new PageController(
-          initialPage: 2,
-          keepPage: false,
-          viewportFraction: 0.5,
-      );
+class _MyReviewPageState extends State<MyReviewPage>
+    with TickerProviderStateMixin {
+  final PageController pageControl = new PageController(
+    initialPage: 2,
+    keepPage: false,
+    viewportFraction: 0.5,
+  );
 
   var slideValue = 200;
 
@@ -65,6 +66,12 @@ class _MyReviewPageState extends State<MyReviewPage> with TickerProviderStateMix
 
   AnimationController animation;
 
+  Offset centerPoint;
+
+  double touchAngle = 0.0;
+
+  double startAngle;
+
   @override
   void initState() {
     super.initState();
@@ -74,8 +81,7 @@ class _MyReviewPageState extends State<MyReviewPage> with TickerProviderStateMix
       upperBound: 400.0,
       duration: const Duration(milliseconds: 600),
       vsync: this,
-    )
-      ..addListener(() {
+    )..addListener(() {
         setState(() {
           print("val :" + animation.value.round().toString());
           slideValue = animation.value.round();
@@ -88,99 +94,76 @@ class _MyReviewPageState extends State<MyReviewPage> with TickerProviderStateMix
   @override
   Widget build(BuildContext context) {
     var textStyle = new TextStyle(color: Colors.white, fontSize: 24.00);
+    double centerX = MediaQuery.of(context).size.width / 2;
+    double centerY = MediaQuery.of(context).size.height* 1.5;
+    centerPoint = Offset(centerX, centerY);
+
+    var arcPainter = ChooserPainter(touchAngle);
+
     return Container(
       margin: MediaQuery.of(context).padding,
-      child: new GestureDetector(
-        onPanStart: (DragStartDetails details){
-          print('_MyReviewPageState.build onPanStart');
-        },
-        onPanDown: (DragDownDetails details){
-          print('_MyReviewPageState.build onPanDown');
-        },
-        onPanUpdate: (DragUpdateDetails details){
-          print('_MyReviewPageState.build onPanUpdate {$details.delta}');
-        },
-        onPanCancel: (){
-          print('_MyReviewPageState.build onPanCancel');
-        },
-        onPanEnd: (DragEndDetails details){
-          print('_MyReviewPageState.build onPanEnd');
-        },
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Center(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Text(
-                  "How was your experience with us?",
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.headline,
-                ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(
+                "How was your experience with us?",
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.headline,
               ),
             ),
-            CustomPaint(
-              size: Size(MediaQuery.of(context).size.width,
-                  MediaQuery.of(context).size.width / 2),
-              painter: SmilePainter(slideValue),
-            ),
-            Slider(
-              min: 0.0,
-              max: 400.0,
-              value: slideValue.toDouble(),
-              onChanged: (double newValue) {
-                setState(() {
-                  slideValue = newValue.round();
-                });
+          ),
+          CustomPaint(
+            size: Size(MediaQuery.of(context).size.width,
+                MediaQuery.of(context).size.width / 2),
+            painter: SmilePainter(slideValue),
+          ),
+          Slider(
+            min: 0.0,
+            max: 400.0,
+            value: slideValue.toDouble(),
+            onChanged: (double newValue) {
+              setState(() {
+                slideValue = newValue.round();
+              });
+            },
+          ),
+          new SizedBox(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.width * 3 / 4,
+            child: new GestureDetector(
+              onPanStart: (DragStartDetails details) {
+                print('_MyReviewPageState.build onPanStart {$details}');
+                var deltaX = centerPoint.dx - details.globalPosition.dx;
+                var deltaY = centerPoint.dy - details.globalPosition.dy;
+                startAngle = atan2(deltaY, deltaX);
               },
+              onPanUpdate: (DragUpdateDetails details) {
+                print('_MyReviewPageState.build onPanUpdate {$details}');
+                var deltaX = centerPoint.dx - details.globalPosition.dx;
+                var deltaY = centerPoint.dy - details.globalPosition.dy;
+                var freshAngle = atan2(deltaY, deltaX);
+
+                setState(() {
+                  touchAngle += freshAngle - startAngle;
+                });
+                startAngle = freshAngle;
+              },
+              onPanEnd: (DragEndDetails details){
+                print('_MyReviewPageState.build :' + details.primaryVelocity.toString());
+                arcPainter.a
+              },
+              child: CustomPaint(
+                painter: arcPainter,
+              ),
             ),
-//          new SizedBox(
-//            height: 200.0,
-//            child: new NotificationListener(
-//              onNotification: (ScrollNotification notification){
-//                if(!notification.metrics.atEdge){
-//                  print('_MyReviewPageState.build ' + MediaQuery.of(context).size.width.toString() + " " + notification.metrics.pixels.toString());
-//                }
-//
-//              },
-//              child: PageView.builder(
-//                pageSnapping: true,
-//                onPageChanged: (int value) {
-//                  print('_MyReviewPageState._onPageChanged ' + value.toString());
-//                    animation.animateTo(value*100.0);
-//                },
-//                controller: pageControl,
-//                itemCount: 4,
-//                physics: new AlwaysScrollableScrollPhysics(),
-//                itemBuilder: (context, index) {
-//                  return new Container(
-//                      decoration: new BoxDecoration(
-//                        gradient: new LinearGradient(
-//                            colors: [
-//                              reviewItems[index % 4].startColor,
-//                              reviewItems[index % 4].endColor
-//                            ]
-//                        ),
-//                      ),
-//                      alignment: Alignment.center,
-//                      child: new Text(
-//                        reviewItems[index % 4].title,
-//                        style: textStyle,
-//                      ));
-//                },
-//              ),
-//            ),
-//          ),
-              CustomPaint(
-                size: Size(MediaQuery.of(context).size.width, MediaQuery.of(context).size.width*3/4),
-                painter: ChooserPainter(slideValue),
-              )
-          ],
-        ),
+          )
+        ],
       ),
     );
   }
-
 }
 
 class ReviewItem {
