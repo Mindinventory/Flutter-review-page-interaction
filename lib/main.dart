@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:review/SmilePainter.dart';
-import 'package:review/ChooserPainter.dart';
+import 'package:review/Chooser.dart';
 
 void main() => runApp(new MyApp());
 
@@ -41,36 +41,7 @@ class _MyReviewPageState extends State<MyReviewPage>
 
   var slideValue = 200;
 
-  List<ReviewItem> reviewItems = [
-    ReviewItem(
-      "BAD",
-      Color(0xFFfe0944),
-      Color(0xFFfeae96),
-    ),
-    ReviewItem(
-      "UGH",
-      Color(0xFFF9D976),
-      Color(0xfff39f86),
-    ),
-    ReviewItem(
-      "OK",
-      Color(0xFF21e1fa),
-      Color(0xff3bb8fd),
-    ),
-    ReviewItem(
-      "GOOD",
-      Color(0xFF3ee98a),
-      Color(0xFF41f7c7),
-    )
-  ];
-
   AnimationController animation;
-
-  Offset centerPoint;
-
-  double touchAngle = 0.0;
-
-  double startAngle;
 
   @override
   void initState() {
@@ -94,11 +65,6 @@ class _MyReviewPageState extends State<MyReviewPage>
   @override
   Widget build(BuildContext context) {
     var textStyle = new TextStyle(color: Colors.white, fontSize: 24.00);
-    double centerX = MediaQuery.of(context).size.width / 2;
-    double centerY = MediaQuery.of(context).size.height* 1.5;
-    centerPoint = Offset(centerX, centerY);
-
-    var arcPainter = ChooserPainter(touchAngle);
 
     return Container(
       margin: MediaQuery.of(context).padding,
@@ -130,46 +96,9 @@ class _MyReviewPageState extends State<MyReviewPage>
               });
             },
           ),
-          new SizedBox(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.width * 3 / 4,
-            child: new GestureDetector(
-              onPanStart: (DragStartDetails details) {
-                print('_MyReviewPageState.build onPanStart {$details}');
-                var deltaX = centerPoint.dx - details.globalPosition.dx;
-                var deltaY = centerPoint.dy - details.globalPosition.dy;
-                startAngle = atan2(deltaY, deltaX);
-              },
-              onPanUpdate: (DragUpdateDetails details) {
-                print('_MyReviewPageState.build onPanUpdate {$details}');
-                var deltaX = centerPoint.dx - details.globalPosition.dx;
-                var deltaY = centerPoint.dy - details.globalPosition.dy;
-                var freshAngle = atan2(deltaY, deltaX);
-
-                setState(() {
-                  touchAngle += freshAngle - startAngle;
-                });
-                startAngle = freshAngle;
-              },
-              onPanEnd: (DragEndDetails details){
-                print('_MyReviewPageState.build :' + details.primaryVelocity.toString());
-                arcPainter.a
-              },
-              child: CustomPaint(
-                painter: arcPainter,
-              ),
-            ),
-          )
+          Chooser()
         ],
       ),
     );
   }
-}
-
-class ReviewItem {
-  final String title;
-  final Color startColor;
-  final Color endColor;
-
-  ReviewItem(this.title, this.startColor, this.endColor);
 }
