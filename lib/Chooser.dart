@@ -15,7 +15,7 @@ class ChooserState extends State<Chooser> with SingleTickerProviderStateMixin {
   var slideValue = 200;
   Offset centerPoint;
 
-  double touchAngle = 0.0;
+  double userAngle = 0.0;
 
   double startAngle;
 
@@ -38,35 +38,38 @@ class ChooserState extends State<Chooser> with SingleTickerProviderStateMixin {
     return degree * (PI / 180);
   }
 
+  static double radianToDegrees(double radian) {
+    return radian * (180 / PI );
+  }
+
   @override
   void initState() {
     arcItems = List<ArcItem>();
 
     arcItems.add(ArcItem("OK", [Color(0xFF21e1fa), Color(0xff3bb8fd)],
-        angleInRadiansByTwo + touchAngle));
+        angleInRadiansByTwo + userAngle));
     arcItems.add(ArcItem("GOOD", [Color(0xFF3ee98a), Color(0xFF41f7c7)],
-        angleInRadiansByTwo + touchAngle + (angleInRadians)));
+        angleInRadiansByTwo + userAngle + (angleInRadians)));
     arcItems.add(ArcItem("BAD", [Color(0xFFfe0944), Color(0xFFfeae96)],
-        angleInRadiansByTwo + touchAngle + (2 * angleInRadians)));
+        angleInRadiansByTwo + userAngle + (2 * angleInRadians)));
     arcItems.add(ArcItem("UGH", [Color(0xFFF9D976), Color(0xfff39f86)],
-        angleInRadiansByTwo + touchAngle + (3 * angleInRadians)));
+        angleInRadiansByTwo + userAngle + (3 * angleInRadians)));
     arcItems.add(ArcItem("OK", [Color(0xFF21e1fa), Color(0xff3bb8fd)],
-        angleInRadiansByTwo + touchAngle + (4 * angleInRadians)));
+        angleInRadiansByTwo + userAngle + (4 * angleInRadians)));
     arcItems.add(ArcItem("GOOD", [Color(0xFF3ee98a), Color(0xFF41f7c7)],
-        angleInRadiansByTwo + touchAngle + (5 * angleInRadians)));
+        angleInRadiansByTwo + userAngle + (5 * angleInRadians)));
     arcItems.add(ArcItem("BAD", [Color(0xFFfe0944), Color(0xFFfeae96)],
-        angleInRadiansByTwo + touchAngle + (6 * angleInRadians)));
+        angleInRadiansByTwo + userAngle + (6 * angleInRadians)));
     arcItems.add(ArcItem("UGH", [Color(0xFFF9D976), Color(0xfff39f86)],
-        angleInRadiansByTwo + touchAngle + (7 * angleInRadians)));
+        angleInRadiansByTwo + userAngle + (7 * angleInRadians)));
 
     animation = new AnimationController(
         duration: const Duration(milliseconds: 400), vsync: this);
     animation.addListener(() {
-      print('I AM HERE! ' + animation.value.toString());
-      touchAngle = lerpDouble(animationStart, animationEnd, animation.value);
+      userAngle = lerpDouble(animationStart, animationEnd, animation.value);
       setState(() {
         for (int i = 0; i < arcItems.length; i++) {
-          arcItems[i].startAngle = angleInRadiansByTwo + touchAngle +
+          arcItems[i].startAngle = angleInRadiansByTwo + userAngle +
               (i * angleInRadians);
         }
       });
@@ -74,28 +77,8 @@ class ChooserState extends State<Chooser> with SingleTickerProviderStateMixin {
     super.initState();
   }
 
-  //find top arc item with Magic!!
-  ArcItem findTopItem(bool findLeft){
-    List<double> diffs = new List(arcItems.length);
-    for(int i = 0; i<arcItems.length;i++){
-      //find total of differences between starting and ending angles of each item, the top item will have smallest total.
-      diffs[i] =(
-              (arcItems[i].startAngle - centerInRadians)//diff from starting angle
-          + (arcItems[i].startAngle + angleInRadians - centerInRadians)//diff from ending angle
-      ).abs();
-    }
-
-    if(findLeft){
-      return arcItems[diffs.indexOf(diffs.reduce(min))-1];
-    }else{
-      return arcItems[diffs.indexOf(diffs.reduce(min))+1];
-    }
-
-  }
-
   @override
   Widget build(BuildContext context) {
-    print('ChooserState.build');
     double centerX = MediaQuery.of(context).size.width / 2;
     double centerY = MediaQuery.of(context).size.height * 1.5;
     centerPoint = Offset(centerX, centerY);
@@ -111,34 +94,84 @@ class ChooserState extends State<Chooser> with SingleTickerProviderStateMixin {
 //          animation.forward(from: 0.0);
 //        },
         onPanStart: (DragStartDetails details) {
-          print('_MyReviewPageState.build onPanStart {$details}');
           startingPoint = details.globalPosition;
           var deltaX = centerPoint.dx - details.globalPosition.dx;
           var deltaY = centerPoint.dy - details.globalPosition.dy;
           startAngle = atan2(deltaY, deltaX);
         },
         onPanUpdate: (DragUpdateDetails details) {
-          print('_MyReviewPageState.build onPanUpdate {$touchAngle}');
           endingPoint = details.globalPosition;
           var deltaX = centerPoint.dx - details.globalPosition.dx;
           var deltaY = centerPoint.dy - details.globalPosition.dy;
           var freshAngle = atan2(deltaY, deltaX);
-          touchAngle += freshAngle - startAngle;
+          userAngle += freshAngle - startAngle;
           setState(() {
             for (int i = 0; i < arcItems.length; i++) {
               arcItems[i].startAngle =
-                  angleInRadiansByTwo + touchAngle + (i * angleInRadians);
+                  angleInRadiansByTwo + userAngle + (i * angleInRadians);
             }
           });
           startAngle = freshAngle;
         },
         onPanEnd: (DragEndDetails details){
 
-          ArcItem item = findTopItem(startingPoint.dx<endingPoint.dx);
+          //find top arc item with Magic!!
+          bool rightToLeft = startingPoint.dx<endingPoint.dx;
+            List<double> diffs = new List(arcItems.length);
+            for(int i = 0; i<arcItems.length;i++){
+              //find total of differences between starting and ending angles of each item, the top item will have smallest total.
+              diffs[i] =(
+                  (arcItems[i].startAngle - centerInRadians)//diff from starting angle
+                      + (arcItems[i].startAngle + angleInRadians - centerInRadians)//diff from ending angle
+              ).abs();
+            }
 
-//          Animate it from this values
-          animationStart = touchAngle;
-          animationEnd = touchAngle + centerInRadians - (angleInRadiansByTwo + item.startAngle);
+            int centerItemPosition = diffs.indexOf(diffs.reduce(min));
+
+
+            int nextIndex = 0;
+            if(rightToLeft){
+              nextIndex = centerItemPosition-1;
+              if(nextIndex<0){
+                nextIndex = arcItems.length-1;
+              }
+            }else{
+              nextIndex = centerItemPosition+1;
+              if(nextIndex>=arcItems.length){
+                nextIndex = 0;
+              }
+            }
+
+
+          ArcItem centerItem =  arcItems[centerItemPosition];
+          ArcItem item = arcItems[nextIndex];
+
+
+//        Animate it from this values
+          animationStart = userAngle;
+          if(rightToLeft) {
+            if(centerItemPosition==0){
+              animationEnd = userAngle + centerInRadians -
+                  (angleInRadiansByTwo + item.startAngle);
+            }else
+              {
+              animationEnd = userAngle + centerInRadians -
+                  (angleInRadiansByTwo + centerItem.startAngle - angleInRadians);
+            }
+          }else{
+            if(centerItemPosition==(arcItems.length-1)){
+              animationEnd = userAngle + centerInRadians -
+                  (angleInRadiansByTwo + item.startAngle);
+            }else
+              {
+              animationEnd = userAngle + centerInRadians -
+                  (angleInRadiansByTwo + centerItem.startAngle +
+                      angleInRadians);
+            }
+          }
+
+          String direction = (rightToLeft)?'RTL':'LTR';
+          print('onPanEnd $nextIndex $centerItemPosition ' + direction + ' | ' + radianToDegrees(animationStart).toString()  + " | " + radianToDegrees(animationEnd).toString());
           animation.forward(from: 0.0);
         },
         child: CustomPaint(
@@ -150,7 +183,6 @@ class ChooserState extends State<Chooser> with SingleTickerProviderStateMixin {
     );
   }
 
-  setNewAngle(double touchAngle) {}
 }
 
 class ChooserPainter extends CustomPainter {
