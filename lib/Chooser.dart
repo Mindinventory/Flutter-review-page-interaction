@@ -30,10 +30,13 @@ class ChooserState extends State<Chooser> with SingleTickerProviderStateMixin {
 
   AnimationController animation;
   double animationStart;
-  double animationEnd;
+  double animationEnd = 0.0;
+
+  int currentPosition = 0;
 
   Offset startingPoint;
   Offset endingPoint;
+
   static double degreeToRadians(double degree) {
     return degree * (PI / 180);
   }
@@ -117,61 +120,24 @@ class ChooserState extends State<Chooser> with SingleTickerProviderStateMixin {
 
           //find top arc item with Magic!!
           bool rightToLeft = startingPoint.dx<endingPoint.dx;
-            List<double> diffs = new List(arcItems.length);
-            for(int i = 0; i<arcItems.length;i++){
-              //find total of differences between starting and ending angles of each item, the top item will have smallest total.
-              diffs[i] =(
-                  (arcItems[i].startAngle - centerInRadians)//diff from starting angle
-                      + (arcItems[i].startAngle + angleInRadians - centerInRadians)//diff from ending angle
-              ).abs();
-            }
-
-            int centerItemPosition = diffs.indexOf(diffs.reduce(min));
-
-
-            int nextIndex = 0;
-            if(rightToLeft){
-              nextIndex = centerItemPosition-1;
-              if(nextIndex<0){
-                nextIndex = arcItems.length-1;
-              }
-            }else{
-              nextIndex = centerItemPosition+1;
-              if(nextIndex>=arcItems.length){
-                nextIndex = 0;
-              }
-            }
-
-
-          ArcItem centerItem =  arcItems[centerItemPosition];
-          ArcItem item = arcItems[nextIndex];
-
 
 //        Animate it from this values
           animationStart = userAngle;
           if(rightToLeft) {
-            if(centerItemPosition==0){
-              animationEnd = userAngle + centerInRadians -
-                  (angleInRadiansByTwo + item.startAngle);
-            }else
-              {
-              animationEnd = userAngle + centerInRadians -
-                  (angleInRadiansByTwo + centerItem.startAngle - angleInRadians);
+            animationEnd +=angleInRadians;
+            currentPosition++;
+            if(currentPosition>=arcItems.length){
+              currentPosition = 0;
             }
           }else{
-            if(centerItemPosition==(arcItems.length-1)){
-              animationEnd = userAngle + centerInRadians -
-                  (angleInRadiansByTwo + item.startAngle);
-            }else
-              {
-              animationEnd = userAngle + centerInRadians -
-                  (angleInRadiansByTwo + centerItem.startAngle +
-                      angleInRadians);
+            animationEnd -=angleInRadians;
+            currentPosition--;
+            if(currentPosition<0){
+              currentPosition = arcItems.length;
             }
           }
+          print('currentPosition : $currentPosition');
 
-          String direction = (rightToLeft)?'RTL':'LTR';
-          print('onPanEnd $nextIndex $centerItemPosition ' + direction + ' | ' + radianToDegrees(animationStart).toString()  + " | " + radianToDegrees(animationEnd).toString());
           animation.forward(from: 0.0);
         },
         child: CustomPaint(
@@ -251,6 +217,17 @@ class ChooserPainter extends CustomPainter {
             ..shader = new LinearGradient(
               colors: arcItems[i].colors,
             ).createShader(dummyRect));
+
+//      TextSpan span = new TextSpan(style: new TextStyle(color: Colors.white), text: arcItems[i].text);
+//      TextPainter tp = new TextPainter(text: span, textAlign: TextAlign.center, textDirection: TextDirection.ltr);
+//      tp.layout();
+//      tp.paint(canvas, new Offset(radius2/2*cos(radius2/2*(arcItems[i].startAngle)), radius2/2*cos(radius2/2*(arcItems[i].startAngle))));
+
+    canvas.drawLine(
+        new Offset(radius2*cos(radius2*(arcItems[i].startAngle)), radius2*cos(radius2*(arcItems[i].startAngle))),
+        new Offset(radius3*cos(radius3*(arcItems[i].startAngle)), radius3*cos(radius3*(arcItems[i].startAngle))),
+        debugPaint);
+
     }
 
     Path shadowPath = new Path();
