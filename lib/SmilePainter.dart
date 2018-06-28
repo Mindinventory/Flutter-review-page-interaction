@@ -20,7 +20,7 @@ class SmilePainter extends CustomPainter {
 
   Size lastSize;
 
-  var currentState;
+  ReviewState currentState;
 
   @override
   void paint(Canvas canvas, Size size) {

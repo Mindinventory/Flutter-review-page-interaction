@@ -4,7 +4,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 
-class Chooser extends StatefulWidget {
+class ArcChooser extends StatefulWidget {
 
   ArcSelectedCallback arcSelectedCallback;
 
@@ -14,7 +14,7 @@ class Chooser extends StatefulWidget {
   }
 }
 
-class ChooserState extends State<Chooser> with SingleTickerProviderStateMixin {
+class ChooserState extends State<ArcChooser> with SingleTickerProviderStateMixin {
   var slideValue = 200;
   Offset centerPoint;
 
