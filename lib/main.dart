@@ -40,8 +40,11 @@ class _MyReviewPageState extends State<MyReviewPage>
   );
 
   var slideValue = 200;
+  int lastAnimPosition = 2;
 
   AnimationController animation;
+
+
 
   @override
   void initState() {
@@ -64,9 +67,7 @@ class _MyReviewPageState extends State<MyReviewPage>
 
   @override
   Widget build(BuildContext context) {
-    var textStyle = new TextStyle(color: Colors.white, fontSize: 24.00);
-
-    return Container(
+      return Container(
       margin: MediaQuery.of(context).padding,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -86,17 +87,44 @@ class _MyReviewPageState extends State<MyReviewPage>
                 MediaQuery.of(context).size.width / 2),
             painter: SmilePainter(slideValue),
           ),
-          Slider(
-            min: 0.0,
-            max: 400.0,
-            value: slideValue.toDouble(),
-            onChanged: (double newValue) {
-              setState(() {
-                slideValue = newValue.round();
-              });
-            },
-          ),
+//          Slider(
+//            min: 0.0,
+//            max: 400.0,
+//            value: slideValue.toDouble(),
+//            onChanged: (double newValue) {
+//              setState(() {
+//                slideValue = newValue.round();
+//              });
+//            },
+//          ),
           Chooser()
+          ..arcSelectedCallback = (int pos, ArcItem item){
+
+            int animPosition = pos-2;
+            if(animPosition>3){
+              animPosition = animPosition-4;
+            }
+
+            if(animPosition<0){
+              animPosition= 4+animPosition;
+            }
+
+            if(lastAnimPosition == 3 && animPosition == 0){
+              animation.animateTo(4*100.0);
+            }else if(lastAnimPosition == 0 && animPosition == 3){
+              animation.forward(from: 4*100.0);
+              animation.animateTo(animPosition*100.0);
+            }else if(lastAnimPosition == 0 && animPosition == 1){
+              animation.forward(from: 0.0);
+              animation.animateTo(animPosition*100.0);
+            }else{
+              animation.animateTo(animPosition*100.0);
+            }
+
+            print('_MyReviewPageState.build $pos | $animPosition | $lastAnimPosition ' + item.text);
+
+            lastAnimPosition = animPosition;
+          }
         ],
       ),
     );

@@ -5,9 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 
 class Chooser extends StatefulWidget {
+
+  ArcSelectedCallback arcSelectedCallback;
+
   @override
   State<StatefulWidget> createState() {
-    return ChooserState();
+    return ChooserState(arcSelectedCallback);
   }
 }
 
@@ -37,6 +40,12 @@ class ChooserState extends State<Chooser> with SingleTickerProviderStateMixin {
   Offset startingPoint;
   Offset endingPoint;
 
+  ArcSelectedCallback arcSelectedCallback;
+
+  ChooserState(ArcSelectedCallback arcSelectedCallback){
+    this.arcSelectedCallback = arcSelectedCallback;
+  }
+
   static double degreeToRadians(double degree) {
     return degree * (PI / 180);
   }
@@ -49,22 +58,24 @@ class ChooserState extends State<Chooser> with SingleTickerProviderStateMixin {
   void initState() {
     arcItems = List<ArcItem>();
 
-    arcItems.add(ArcItem("OK", [Color(0xFF21e1fa), Color(0xff3bb8fd)],
+
+    arcItems.add(ArcItem("UGH", [Color(0xFFF9D976), Color(0xfff39f86)],
         angleInRadiansByTwo + userAngle));
-    arcItems.add(ArcItem("GOOD", [Color(0xFF3ee98a), Color(0xFF41f7c7)],
-        angleInRadiansByTwo + userAngle + (angleInRadians)));
-    arcItems.add(ArcItem("BAD", [Color(0xFFfe0944), Color(0xFFfeae96)],
-        angleInRadiansByTwo + userAngle + (2 * angleInRadians)));
-    arcItems.add(ArcItem("UGH", [Color(0xFFF9D976), Color(0xfff39f86)],
-        angleInRadiansByTwo + userAngle + (3 * angleInRadians)));
     arcItems.add(ArcItem("OK", [Color(0xFF21e1fa), Color(0xff3bb8fd)],
-        angleInRadiansByTwo + userAngle + (4 * angleInRadians)));
+        angleInRadiansByTwo + userAngle + (angleInRadians)));
     arcItems.add(ArcItem("GOOD", [Color(0xFF3ee98a), Color(0xFF41f7c7)],
-        angleInRadiansByTwo + userAngle + (5 * angleInRadians)));
+        angleInRadiansByTwo + userAngle + (2 * angleInRadians)));
     arcItems.add(ArcItem("BAD", [Color(0xFFfe0944), Color(0xFFfeae96)],
-        angleInRadiansByTwo + userAngle + (6 * angleInRadians)));
+        angleInRadiansByTwo + userAngle + (3 * angleInRadians)));
     arcItems.add(ArcItem("UGH", [Color(0xFFF9D976), Color(0xfff39f86)],
+        angleInRadiansByTwo + userAngle + (4 * angleInRadians)));
+    arcItems.add(ArcItem("OK", [Color(0xFF21e1fa), Color(0xff3bb8fd)],
+        angleInRadiansByTwo + userAngle + (5 * angleInRadians)));
+    arcItems.add(ArcItem("GOOD", [Color(0xFF3ee98a), Color(0xFF41f7c7)],
+        angleInRadiansByTwo + userAngle + (6 * angleInRadians)));
+    arcItems.add(ArcItem("BAD", [Color(0xFFfe0944), Color(0xFFfeae96)],
         angleInRadiansByTwo + userAngle + (7 * angleInRadians)));
+
 
     animation = new AnimationController(
         duration: const Duration(milliseconds: 400), vsync: this);
@@ -125,18 +136,21 @@ class ChooserState extends State<Chooser> with SingleTickerProviderStateMixin {
           animationStart = userAngle;
           if(rightToLeft) {
             animationEnd +=angleInRadians;
+            currentPosition--;
+            if(currentPosition<0){
+              currentPosition = arcItems.length-1;
+            }
+          }else{
+            animationEnd -=angleInRadians;
             currentPosition++;
             if(currentPosition>=arcItems.length){
               currentPosition = 0;
             }
-          }else{
-            animationEnd -=angleInRadians;
-            currentPosition--;
-            if(currentPosition<0){
-              currentPosition = arcItems.length;
-            }
           }
-          print('currentPosition : $currentPosition');
+
+          if(arcSelectedCallback!=null){
+            arcSelectedCallback(currentPosition, arcItems[(currentPosition>=(arcItems.length-1))?0:currentPosition+1]);
+          }
 
           animation.forward(from: 0.0);
         },
@@ -151,6 +165,7 @@ class ChooserState extends State<Chooser> with SingleTickerProviderStateMixin {
 
 }
 
+// draw the arc and other stuff
 class ChooserPainter extends CustomPainter {
   //debugging Paint
   final debugPaint = new Paint()
@@ -223,10 +238,10 @@ class ChooserPainter extends CustomPainter {
 //      tp.layout();
 //      tp.paint(canvas, new Offset(radius2/2*cos(radius2/2*(arcItems[i].startAngle)), radius2/2*cos(radius2/2*(arcItems[i].startAngle))));
 
-    canvas.drawLine(
-        new Offset(radius2*cos(radius2*(arcItems[i].startAngle)), radius2*cos(radius2*(arcItems[i].startAngle))),
-        new Offset(radius3*cos(radius3*(arcItems[i].startAngle)), radius3*cos(radius3*(arcItems[i].startAngle))),
-        debugPaint);
+//    canvas.drawLine(
+//        new Offset(radius2*cos(radius2*(arcItems[i].startAngle)), radius2*cos(radius2*(arcItems[i].startAngle))),
+//        new Offset(radius3*cos(radius3*(arcItems[i].startAngle)), radius3*cos(radius3*(arcItems[i].startAngle))),
+//        debugPaint);
 
     }
 
@@ -251,6 +266,8 @@ class ChooserPainter extends CustomPainter {
     return true;
   }
 }
+
+typedef void ArcSelectedCallback(int position, ArcItem arcitem);
 
 class ArcItem {
   String text;
