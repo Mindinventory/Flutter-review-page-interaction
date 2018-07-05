@@ -78,7 +78,7 @@ class ChooserState extends State<ArcChooser> with SingleTickerProviderStateMixin
 
 
     animation = new AnimationController(
-        duration: const Duration(milliseconds: 400), vsync: this);
+        duration: const Duration(milliseconds: 200), vsync: this);
     animation.addListener(() {
       userAngle = lerpDouble(animationStart, animationEnd, animation.value);
       setState(() {
@@ -173,6 +173,12 @@ class ChooserPainter extends CustomPainter {
     ..strokeWidth = 1.0
     ..style = PaintingStyle.stroke;
 
+  final linePaint = new Paint()
+    ..color = Colors.black.withAlpha(50) //0xFFF9D976
+    ..strokeWidth = 2.0
+    ..style = PaintingStyle.stroke
+    ..strokeCap = StrokeCap.square;
+
   final whitePaint = new Paint()
     ..color = Colors.white //0xFFF9D976
     ..strokeWidth = 1.0
@@ -180,10 +186,21 @@ class ChooserPainter extends CustomPainter {
 
   List<ArcItem> arcItems;
   double angleInRadians;
-
+  double angleInRadiansByTwo;
+  double angleInRadians1;
+  double angleInRadians2;
+  double angleInRadians3;
+  double angleInRadians4;
   ChooserPainter(List<ArcItem> arcItems, double angleInRadians) {
     this.arcItems = arcItems;
     this.angleInRadians = angleInRadians;
+    this.angleInRadiansByTwo = angleInRadians/2;
+
+    angleInRadians1 = angleInRadians/6;
+    angleInRadians2 = angleInRadians/3;
+    angleInRadians3 = angleInRadians*4/6;
+    angleInRadians4 = angleInRadians*5/6;
+
   }
 
   @override
@@ -204,19 +221,22 @@ class ChooserPainter extends CustomPainter {
     double bottomY = centerY + radius;
 
     //for items
-    double radius2 = radius * 1.5;
-    double leftX2 = centerX - radius2;
-    double topY2 = centerY - radius2;
-    double rightX2 = centerX + radius2;
-    double bottomY2 = centerY + radius2;
+    double radiusItems = radius * 1.5;
+    double leftX2 = centerX - radiusItems;
+    double topY2 = centerY - radiusItems;
+    double rightX2 = centerX + radiusItems;
+    double bottomY2 = centerY + radiusItems;
 
     //for shadow
-    double radius3 = radius * 1.06;
-    double leftX3 = centerX - radius3;
-    double topY3 = centerY - radius3;
-    double rightX3 = centerX + radius3;
-    double bottomY3 = centerY + radius3;
+    double radiusShadow = radius * 1.12;
+    double leftX3 = centerX - radiusShadow;
+    double topY3 = centerY - radiusShadow;
+    double rightX3 = centerX + radiusShadow;
+    double bottomY3 = centerY + radiusShadow;
 
+    double radiusText = radius * 1.30;
+    double radius4 = radius * 1.12;
+    double radius5 = radius * 1.06;
     var arcRect = Rect.fromLTRB(leftX2, topY2, rightX2, bottomY2);
 
     var dummyRect = Rect.fromLTRB(0.0, 0.0, size.width, size.height);
@@ -233,24 +253,71 @@ class ChooserPainter extends CustomPainter {
               colors: arcItems[i].colors,
             ).createShader(dummyRect));
 
-//      TextSpan span = new TextSpan(style: new TextStyle(color: Colors.white), text: arcItems[i].text);
-//      TextPainter tp = new TextPainter(text: span, textAlign: TextAlign.center, textDirection: TextDirection.ltr);
-//      tp.layout();
-//      tp.paint(canvas, new Offset(radius2/2*cos(radius2/2*(arcItems[i].startAngle)), radius2/2*cos(radius2/2*(arcItems[i].startAngle))));
 
-//    canvas.drawLine(
-//        new Offset(radius2*cos(radius2*(arcItems[i].startAngle)), radius2*cos(radius2*(arcItems[i].startAngle))),
-//        new Offset(radius3*cos(radius3*(arcItems[i].startAngle)), radius3*cos(radius3*(arcItems[i].startAngle))),
-//        debugPaint);
 
+      //Draw text
+      TextSpan span = new TextSpan(style: new TextStyle(fontWeight: FontWeight.normal, fontSize: 32.0, color: Colors.white), text: arcItems[i].text);
+      TextPainter tp = new TextPainter(text: span, textAlign: TextAlign.center, textDirection: TextDirection.ltr,);
+      tp.layout();
+
+      //find additional angle to make text in center
+      double f = tp.width/2;
+      double t = sqrt((radiusText*radiusText) + (f*f));
+
+      double additionalAngle = acos(((t*t) + (radiusText*radiusText)-(f*f))/(2*t*radiusText));
+
+      double tX = center.dx + radiusText*cos(arcItems[i].startAngle+angleInRadiansByTwo - additionalAngle);// - (tp.width/2);
+      double tY = center.dy + radiusText*sin(arcItems[i].startAngle+angleInRadiansByTwo - additionalAngle);// - (tp.height/2);
+
+      canvas.save();
+      canvas.translate(tX,tY);
+//      canvas.rotate(arcItems[i].startAngle + angleInRadiansByTwo);
+      canvas.rotate(arcItems[i].startAngle+angleInRadians+angleInRadians+angleInRadiansByTwo);
+      tp.paint(canvas, new Offset(0.0,0.0));
+      canvas.restore();
+
+
+      //big lines
+      canvas.drawLine(
+          new Offset(center.dx + radius4*cos(arcItems[i].startAngle), center.dy + radius4*sin(arcItems[i].startAngle)),
+          center,
+          linePaint);
+
+      canvas.drawLine(
+          new Offset(center.dx + radius4*cos(arcItems[i].startAngle+angleInRadiansByTwo), center.dy + radius4*sin(arcItems[i].startAngle+angleInRadiansByTwo)),
+          center,
+          linePaint);
+
+      //small lines
+      canvas.drawLine(
+          new Offset(center.dx + radius5*cos(arcItems[i].startAngle+angleInRadians1), center.dy + radius5*sin(arcItems[i].startAngle+angleInRadians1)),
+          center,
+          linePaint);
+
+      canvas.drawLine(
+          new Offset(center.dx + radius5*cos(arcItems[i].startAngle+angleInRadians2), center.dy + radius5*sin(arcItems[i].startAngle+angleInRadians2)),
+          center,
+          linePaint);
+
+      canvas.drawLine(
+          new Offset(center.dx + radius5*cos(arcItems[i].startAngle+angleInRadians3), center.dy + radius5*sin(arcItems[i].startAngle+angleInRadians3)),
+          center,
+          linePaint);
+
+      canvas.drawLine(
+          new Offset(center.dx + radius5*cos(arcItems[i].startAngle+angleInRadians4), center.dy + radius5*sin(arcItems[i].startAngle+angleInRadians4)),
+          center,
+          linePaint);
     }
 
+
+    //shadow
     Path shadowPath = new Path();
     shadowPath.addArc(
         Rect.fromLTRB(leftX3, topY3, rightX3, bottomY3),
         ChooserState.degreeToRadians(180.0),
         ChooserState.degreeToRadians(180.0));
-    canvas.drawShadow(shadowPath, Colors.black.withAlpha(220), 8.0, false);
+    canvas.drawShadow(shadowPath, Colors.black.withAlpha(250), 18.0, true);
 
     //bottom white arc
     canvas.drawArc(

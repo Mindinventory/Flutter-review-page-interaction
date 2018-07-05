@@ -208,9 +208,6 @@ class _MyReviewPageState extends State<MyReviewPage>
                   animation.animateTo(animPosition * 100.0);
                 }
 
-                print(
-                    '_MyReviewPageState.build $pos | $animPosition | $lastAnimPosition ' +
-                        item.text);
                 lastAnimPosition = animPosition;
               },
             Padding(

@@ -126,7 +126,7 @@ class SmilePainter extends CustomPainter {
     canvas.drawCircle(centerPoint, radius, circlePaint);
     //---------------------------------------------------------------
 
-    //draw curve with path ------------------------------------------
+    //draw smile curve with path ------------------------------------------
     canvas.drawPath(getSmilePath(currentState), circlePaint);
 
     //---------------------------------------------------------------
@@ -164,8 +164,7 @@ class SmilePainter extends CustomPainter {
 //        Offset(endingX - oneThirdOfDia, endingY), debugPaint);
 //    canvas.drawLine(Offset(endingX - oneThirdOfDiaByTwo, startingY),
 //        Offset(endingX - oneThirdOfDiaByTwo, endingY), debugPaint);
-//    canvas.drawRect(Rect.fromLTRB(leftSmileX, smileY, rightSmileX, smileBottomY), boxPaint ..color=Colors.red);
-    //---------------------------------------------------------------
+    //--------------------------------------------------------------
 
     //draw eyes---------------------------------------------------
     //ele calc
@@ -254,6 +253,7 @@ class ReviewState {
   ReviewState(this.leftOffset, this.leftHandle, this.centerOffset,
       this.rightHandle, this.rightOffset, this.startColor, this.endColor);
 
+  //create new state between given two states.
   static ReviewState tween(ReviewState start, ReviewState end, double ratio) {
     var startColor = Color.lerp(start.startColor, end.startColor, ratio);
     var endColor = Color.lerp(start.endColor, end.endColor, ratio);
