@@ -24,12 +24,13 @@ class SmilePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    final smileHeight = size.width / 2;
     final halfWidth = size.width / 2;
-    final halfHeight = size.height / 2;
+    final halfHeight = smileHeight / 2;
 
     var radius = 0.0;
     var eyeRadius = 10.0;
-    if (size.height < size.width) {
+    if (smileHeight < size.width) {
       radius = halfHeight - 16.0;
     } else {
       radius = halfWidth - 16.0;
@@ -63,6 +64,8 @@ class SmilePainter extends CustomPainter {
         Offset(endingX - (radius / 2), endingY - (oneThirdOfDiaByTwo * 1.5)),
         Color(0xFFfe0944),
         Color(0xFFfeae96),
+          Color(0xFFfe5c6e),
+        'BAD'
       );
 
       ughReview = ReviewState(
@@ -73,6 +76,8 @@ class SmilePainter extends CustomPainter {
         Offset(endingX - (radius / 2), endingY - oneThirdOfDia),
         Color(0xFFF9D976),
         Color(0xfff39f86),
+          Color(0xFFf6bc7e),
+        'UGH'
       );
 
       okReview = ReviewState(
@@ -83,6 +88,8 @@ class SmilePainter extends CustomPainter {
         Offset(endingX - (radius / 2), endingY - (oneThirdOfDiaByTwo * 2)),
         Color(0xFF21e1fa),
         Color(0xff3bb8fd),
+        Color(0xFF28cdfc),
+        'OK'
       );
 
       goodReview = ReviewState(
@@ -95,20 +102,61 @@ class SmilePainter extends CustomPainter {
         Offset(endingX - (radius / 2), endingY - (oneThirdOfDiaByTwo * 2)),
         Color(0xFF3ee98a),
         Color(0xFF41f7c7),
+          Color(0xFF41f7c6),
+        'GOOD'
       );
     }
 
 //    currentState = ReviewState.tween(okReview, goodReview, slideValue / 100);
 //    currentState = goodReview;
     if(slideValue<=100){
-      currentState = ReviewState.tween(badReview, ughReview, slideValue/100);
+      currentState = ReviewState.lerp(badReview, ughReview, slideValue/100);
     }else if(slideValue<=200){
-      currentState = ReviewState.tween(ughReview, okReview, (slideValue-100)/100);
+      currentState = ReviewState.lerp(ughReview, okReview, (slideValue-100)/100);
     }else if(slideValue<=300){
-      currentState = ReviewState.tween(okReview, goodReview, (slideValue-200)/100);
+
+      double diff = (slideValue-200)/100;
+      currentState = ReviewState.lerp(okReview, goodReview, diff);
+
+//      tweening between ok 200 to good 300
+
+      //Draw text
+
+      TextSpan spanCenter = new TextSpan(style: new TextStyle(fontWeight: FontWeight.bold, fontSize: 52.0, color: okReview.titleColor), text: okReview.title);
+      TextPainter tpCenter = new TextPainter(text: spanCenter, textDirection: TextDirection.ltr);
+
+      TextSpan spanLeft = new TextSpan(style: new TextStyle(fontWeight: FontWeight.bold, fontSize: 52.0, color: ughReview.titleColor), text: ughReview.title);
+      TextPainter tpLeft = new TextPainter(text: spanLeft, textDirection: TextDirection.ltr);
+
+      TextSpan spanRight = new TextSpan(style: new TextStyle(fontWeight: FontWeight.bold, fontSize: 52.0, color: goodReview.titleColor), text: goodReview.title);
+      TextPainter tpRight = new TextPainter(text: spanRight, textDirection: TextDirection.ltr);
+
+      tpCenter.layout();
+      tpLeft.layout();
+      tpRight.layout();
+
+
+      double goodWidth = tpCenter.width;
+      double halfGoodWidth = goodWidth/2;
+      double centerCnter = halfWidth;
+      double leftCnter = centerCnter-goodWidth;
+      double rightCenter = centerCnter+goodWidth;
+
+      Offset centerTextOffset = new Offset(centerCnter - halfGoodWidth, smileHeight);
+      Offset leftTextOffset = new Offset(leftCnter-(tpLeft.width/2), smileHeight);
+      Offset rightTextOffset = new Offset(rightCenter-(tpRight.width/2), smileHeight);
+
+      tpCenter.paint(canvas, Offset.lerp(centerTextOffset, leftTextOffset, diff));
+      tpLeft.paint(canvas, leftTextOffset);
+      tpRight.paint(canvas, Offset.lerp(rightTextOffset, centerTextOffset, diff));
+
     }else if(slideValue<=400){
-      currentState = ReviewState.tween(goodReview, badReview, (slideValue-300)/100);
+      currentState = ReviewState.lerp(goodReview, badReview, (slideValue-300)/100);
     }
+
+
+
+
 
     //draw the outer circle------------------------------------------
 
@@ -133,37 +181,37 @@ class SmilePainter extends CustomPainter {
 
     //drawing stuff for debugging-----------------------------------
 
-//    canvas.drawRect(
-//        Rect.fromLTRB(0.0, 0.0, size.width, size.height), debugPaint);
-//    canvas.drawRect(
-//        Rect.fromLTRB(startingX, startingY, endingX, endingY), debugPaint);
-//
-//    canvas.drawLine(
-//        Offset(startingX, startingY), Offset(endingX, endingY), debugPaint);
-//    canvas.drawLine(
-//        Offset(endingX, startingY), Offset(startingX, endingY), debugPaint);
-//    canvas.drawLine(Offset(startingX + radius, startingY),
-//        Offset(startingX + radius, endingY), debugPaint);
-//    canvas.drawLine(Offset(startingX, startingY + radius),
-//        Offset(endingX, startingY + radius), debugPaint);
-//
-//    //horizontal lines
-//    canvas.drawLine(Offset(startingX, startingY + oneThirdOfDia),
-//        Offset(endingX, startingY + oneThirdOfDia), debugPaint);
-//    canvas.drawLine(Offset(startingX, endingY - oneThirdOfDia),
-//        Offset(endingX, endingY - oneThirdOfDia), debugPaint);
-//    canvas.drawLine(Offset(startingX, endingY - oneThirdOfDiaByTwo),
-//        Offset(endingX, endingY - oneThirdOfDiaByTwo), debugPaint);
-//
-//    //vertical lines
-//    canvas.drawLine(Offset(startingX + oneThirdOfDiaByTwo, startingY),
-//        Offset(startingX + oneThirdOfDiaByTwo, endingY), debugPaint);
-//    canvas.drawLine(Offset(startingX + oneThirdOfDia, startingY),
-//        Offset(startingX + oneThirdOfDia, endingY), debugPaint);
-//    canvas.drawLine(Offset(endingX - oneThirdOfDia, startingY),
-//        Offset(endingX - oneThirdOfDia, endingY), debugPaint);
-//    canvas.drawLine(Offset(endingX - oneThirdOfDiaByTwo, startingY),
-//        Offset(endingX - oneThirdOfDiaByTwo, endingY), debugPaint);
+    canvas.drawRect(
+        Rect.fromLTRB(0.0, 0.0, size.width, smileHeight), debugPaint);
+    canvas.drawRect(
+        Rect.fromLTRB(startingX, startingY, endingX, endingY), debugPaint);
+
+    canvas.drawLine(
+        Offset(startingX, startingY), Offset(endingX, endingY), debugPaint);
+    canvas.drawLine(
+        Offset(endingX, startingY), Offset(startingX, endingY), debugPaint);
+    canvas.drawLine(Offset(startingX + radius, startingY),
+        Offset(startingX + radius, endingY), debugPaint);
+    canvas.drawLine(Offset(startingX, startingY + radius),
+        Offset(endingX, startingY + radius), debugPaint);
+
+    //horizontal lines
+    canvas.drawLine(Offset(startingX, startingY + oneThirdOfDia),
+        Offset(endingX, startingY + oneThirdOfDia), debugPaint);
+    canvas.drawLine(Offset(startingX, endingY - oneThirdOfDia),
+        Offset(endingX, endingY - oneThirdOfDia), debugPaint);
+    canvas.drawLine(Offset(startingX, endingY - oneThirdOfDiaByTwo),
+        Offset(endingX, endingY - oneThirdOfDiaByTwo), debugPaint);
+
+    //vertical lines
+    canvas.drawLine(Offset(startingX + oneThirdOfDiaByTwo, startingY),
+        Offset(startingX + oneThirdOfDiaByTwo, endingY), debugPaint);
+    canvas.drawLine(Offset(startingX + oneThirdOfDia, startingY),
+        Offset(startingX + oneThirdOfDia, endingY), debugPaint);
+    canvas.drawLine(Offset(endingX - oneThirdOfDia, startingY),
+        Offset(endingX - oneThirdOfDia, endingY), debugPaint);
+    canvas.drawLine(Offset(endingX - oneThirdOfDiaByTwo, startingY),
+        Offset(endingX - oneThirdOfDiaByTwo, endingY), debugPaint);
     //--------------------------------------------------------------
 
     //draw eyes---------------------------------------------------
@@ -246,15 +294,17 @@ class ReviewState {
   Offset leftHandle;
   Offset rightHandle;
 
+  String title;
+  Color titleColor;
 
   Color startColor;
   Color endColor;
 
   ReviewState(this.leftOffset, this.leftHandle, this.centerOffset,
-      this.rightHandle, this.rightOffset, this.startColor, this.endColor);
+      this.rightHandle, this.rightOffset, this.startColor, this.endColor, this.titleColor, this.title);
 
   //create new state between given two states.
-  static ReviewState tween(ReviewState start, ReviewState end, double ratio) {
+  static ReviewState lerp(ReviewState start, ReviewState end, double ratio) {
     var startColor = Color.lerp(start.startColor, end.startColor, ratio);
     var endColor = Color.lerp(start.endColor, end.endColor, ratio);
 
@@ -281,6 +331,8 @@ class ReviewState {
       ),
       startColor,
       endColor,
+      start.titleColor,
+      start.title
     );
   }
 }

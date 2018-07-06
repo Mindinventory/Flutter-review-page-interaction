@@ -174,7 +174,7 @@ class ChooserPainter extends CustomPainter {
     ..style = PaintingStyle.stroke;
 
   final linePaint = new Paint()
-    ..color = Colors.black.withAlpha(50) //0xFFF9D976
+    ..color = Colors.black.withAlpha(65) //0xFFF9D976
     ..strokeWidth = 2.0
     ..style = PaintingStyle.stroke
     ..strokeCap = StrokeCap.square;
@@ -228,7 +228,7 @@ class ChooserPainter extends CustomPainter {
     double bottomY2 = centerY + radiusItems;
 
     //for shadow
-    double radiusShadow = radius * 1.12;
+    double radiusShadow = radius*1.13;
     double leftX3 = centerX - radiusShadow;
     double topY3 = centerY - radiusShadow;
     double rightX3 = centerX + radiusShadow;
@@ -317,7 +317,7 @@ class ChooserPainter extends CustomPainter {
         Rect.fromLTRB(leftX3, topY3, rightX3, bottomY3),
         ChooserState.degreeToRadians(180.0),
         ChooserState.degreeToRadians(180.0));
-    canvas.drawShadow(shadowPath, Colors.black.withAlpha(250), 18.0, true);
+    canvas.drawShadow(shadowPath, Colors.black, 18.0, true);
 
     //bottom white arc
     canvas.drawArc(
