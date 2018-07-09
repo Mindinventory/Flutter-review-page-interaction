@@ -9,6 +9,10 @@ class SmilePainter extends CustomPainter {
     ..strokeWidth = 1.0
     ..style = PaintingStyle.stroke;
 
+  final whitePaint = new Paint()
+    ..color = Colors.white //0xFFF9D976
+    ..style = PaintingStyle.fill;
+
   int slideValue = 200;
 
   ReviewState badReview;
@@ -38,6 +42,10 @@ class SmilePainter extends CustomPainter {
 
   double eyeRadius;
 
+  double eyeRadiusbythree;
+
+  double eyeRadiusbytwo;
+
   SmilePainter(int slideValue) : slideValue = slideValue;
 
   Size lastSize;
@@ -61,6 +69,8 @@ class SmilePainter extends CustomPainter {
         radius = halfWidth - 16.0;
       }
       eyeRadius = radius / 6.5;
+      eyeRadiusbythree = eyeRadius/3;
+      eyeRadiusbytwo = eyeRadius/2;
 
       diameter = radius * 2;
       //left top corner
@@ -101,11 +111,11 @@ class SmilePainter extends CustomPainter {
           'UGH');
 
       okReview = ReviewState(
-          Offset(leftSmileX, endingY - (oneThirdOfDiaByTwo * 2)),
-          Offset(diameter, endingY - oneThirdOfDia),
-          Offset(endingX - radius, endingY - oneThirdOfDia),
-          Offset(startingX + radius, endingY - (oneThirdOfDiaByTwo * 2)),
-          Offset(endingX - (radius / 2), endingY - (oneThirdOfDiaByTwo * 2)),
+          Offset(leftSmileX, endingY - (oneThirdOfDiaByTwo * 1.5)),
+          Offset(diameter, endingY - (oneThirdOfDiaByTwo * 1.5)),
+          Offset(endingX - radius, endingY - (oneThirdOfDiaByTwo * 1.5)),
+          Offset(startingX + radius, endingY - (oneThirdOfDiaByTwo * 1.5)),
+          Offset(endingX - (radius / 2), endingY - (oneThirdOfDiaByTwo * 1.5)),
           Color(0xFF21e1fa),
           Color(0xff3bb8fd),
           Color(0xFF28cdfc),
@@ -232,19 +242,85 @@ class SmilePainter extends CustomPainter {
       PaintingStyle.fill,
     );
 
-//    var eyeRadiusbythree = eyeRadius/3;
-//
-//    Path clipPath = new Path();
-//    clipPath.moveTo(leftEyeX-eyeRadiusbythree, eyeY-(eyeRadiusbythree*2));
-
-//    canvas.save();
-//    canvas.clipPath(path)
-//    canvas.clipRect(Rect.fromLTRB(leftEyeX-eyeRadius, eyeY, leftEyeX+(eyeRadius*2), eyeY + eyeRadius));
     canvas.drawCircle(leftEyePoint, eyeRadius, leftEyePaintFill);
-//    canvas.restore();
     canvas.drawCircle(rightEyePoint, eyeRadius, rightEyePaintFill);
 
+    //draw the edges of BAD Review
+    if (slideValue <= 100 || slideValue > 300) {
+
+      double diff = -1.0;
+      double tween = -1.0;
+
+      if (slideValue <= 100) {
+        diff = slideValue / 100;
+        tween = lerpDouble(eyeY-(eyeRadiusbythree*0.6), eyeY-eyeRadius, diff);
+      } else if (slideValue > 300) {
+        diff = (slideValue - 300) / 100;
+        tween = lerpDouble(eyeY-eyeRadius, eyeY-(eyeRadiusbythree*0.6), diff);
+
+      }
+
+      List<Offset> polygonPath = List<Offset>();
+      polygonPath.add(Offset(leftEyeX-eyeRadiusbytwo, eyeY-eyeRadius));
+      polygonPath.add(Offset(leftEyeX+eyeRadius, tween));
+      polygonPath.add(Offset(leftEyeX+eyeRadius, eyeY-eyeRadius));
+
+      Path clipPath = new Path();
+      clipPath.addPolygon(polygonPath, true);
+
+      canvas.drawPath(clipPath, whitePaint);
+
+      List<Offset> polygonPath2 = List<Offset>();
+      polygonPath2.add(Offset(rightEyeX+eyeRadiusbytwo, eyeY-eyeRadius));
+      polygonPath2.add(Offset(rightEyeX-eyeRadius, tween));
+      polygonPath2.add(Offset(rightEyeX-eyeRadius, eyeY-eyeRadius));
+
+      Path clipPath2 = new Path();
+      clipPath2.addPolygon(polygonPath2, true);
+
+      canvas.drawPath(clipPath2, whitePaint);
+    }
+
+    //draw the balls of UGH Review
+    if (slideValue > 0 && slideValue < 200) {
+
+      double diff = -1.0;
+      double leftTweenX = -1.0;
+      double leftTweenY = -1.0;
+
+      double rightTweenX = -1.0;
+      double rightTweenY = -1.0;
+
+      if (slideValue <= 100) {
+//      bad to ugh
+        diff = slideValue / 100;
+        leftTweenX = lerpDouble(leftEyeX-eyeRadius, leftEyeX, diff);
+        leftTweenY = lerpDouble(eyeY-eyeRadius, eyeY, diff);
+
+        rightTweenX = lerpDouble(rightEyeX+eyeRadius, rightEyeX, diff);
+        rightTweenY = lerpDouble(eyeY, eyeY-(eyeRadius+eyeRadiusbythree), diff);
+
+      } else {
+//      ugh to ok
+        diff = (slideValue - 100) / 100;
+
+        leftTweenX = lerpDouble(leftEyeX, leftEyeX-eyeRadius, diff);
+        leftTweenY = lerpDouble(eyeY, eyeY-eyeRadius, diff);
+
+        rightTweenX = lerpDouble(rightEyeX, rightEyeX+eyeRadius, diff);
+        rightTweenY = lerpDouble(eyeY-(eyeRadius+eyeRadiusbythree), eyeY, diff);
+
+
+      }
+
+      canvas.drawOval(Rect.fromLTRB(leftEyeX-(eyeRadius+eyeRadiusbythree), eyeY-(eyeRadius+eyeRadiusbythree), leftTweenX, leftTweenY), whitePaint);
+
+      canvas.drawOval(Rect.fromLTRB(rightTweenX, eyeY, rightEyeX+(eyeRadius+eyeRadiusbythree), eyeY-(eyeRadius+eyeRadiusbythree)), whitePaint);
+    }
+
+
     //---------------------------------------------------------------
+
   }
 
   tweenText(ReviewState centerReview, ReviewState rightReview, double diff,

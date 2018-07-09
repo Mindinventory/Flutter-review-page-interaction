@@ -75,7 +75,7 @@ class _MyReviewPageState extends State<MyReviewPage>
       value: 0.0,
       lowerBound: 0.0,
       upperBound: 400.0,
-      duration: const Duration(milliseconds: 600),
+      duration: const Duration(milliseconds: 800),
       vsync: this,
     )..addListener(() {
         setState(() {
