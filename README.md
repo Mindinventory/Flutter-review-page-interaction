@@ -1,14 +1,38 @@
 # Review Page Interaction
 
-Review Page UX made with Flutter identical to <a href="https://dribbble.com/shots/4332677-Review-Page-Interaction">this</a>
+This project aims to provide a simple and customizable Review Page interaction made with Flutter.
 
-It is optimized to work on Android and iOS
+Check it out on Dribbble (https://dribbble.com/shots/4332677-Review-Page-Interaction)
+
 
 <img src="/media/review.gif" width="300">
 
 # Usage
 
-Just take the source code in your project and modify it at will.
+For the Arc menu use ArcChooser and for the Smiley with expressions you can put the SmileyPainter in your own project.
+
+
+To customise the colors of Smiley check <a href="https://github.com/Mindinventory/Flutter-review-page-interaction/blob/master/lib/SmilePainter.dart">SmilePainter.dart</a>
+
+
+It is possible to customise the colors, Smile Patterns and Eye expressions with ReviewState
+
+Modifications can be done with Fonts,Colors and Arc item widths in Arc menu
+
+check <a href="https://github.com/Mindinventory/Flutter-review-page-interaction/blob/master/lib/ArcChooser.dart">ArcChooser.dart</a>
+ to customise it.
+
+
+# Compatibility
+
+  * Amdroid 9-27
+  * iOS 7-9
+
+# Changelog
+
+### Version: 1.0
+
+  * Initial Build
 
 # LICENSE!
 
