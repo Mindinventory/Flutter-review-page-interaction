@@ -1,8 +1,10 @@
 # Review Page Interaction
 
-Review Page UX made with Flutter
+Review Page UX made with Flutter identical to <a href="https://dribbble.com/shots/4332677-Review-Page-Interaction">this</a>
 
-![image](/media/review.gif)
+It is optimized to work on Android and iOS
+
+<img src="/media/review.gif" width="300">
 
 # Usage
 
