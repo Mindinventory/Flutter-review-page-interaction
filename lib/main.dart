@@ -1,13 +1,19 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:review/SmilePainter.dart';
 import 'package:review/ArcChooser.dart';
 
-void main() => runApp(new MyApp());
+void main() {
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitDown,
+    DeviceOrientation.portraitUp,
+  ]);
+  runApp(new MyApp());
+}
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
 
   @override
   Widget build(BuildContext context) {
@@ -79,29 +85,35 @@ class _MyReviewPageState extends State<MyReviewPage>
       vsync: this,
     )..addListener(() {
         setState(() {
-
           slideValue = animation.value.toInt();
 
           double ratio;
 
-          if(slideValue<=100){
-            ratio = animation.value/100;
-            startColor = Color.lerp(badArcItem.colors[0], ughArcItem.colors[0],ratio);
-            endColor = Color.lerp(badArcItem.colors[1], ughArcItem.colors[1],ratio);
-          }else if(slideValue<=200){
-            ratio = (animation.value-100)/100;
-            startColor = Color.lerp(ughArcItem.colors[0], okArcItem.colors[0],ratio);
-            endColor = Color.lerp(ughArcItem.colors[1], okArcItem.colors[1],ratio);
-          }else if(slideValue<=300){
-            ratio = (animation.value-200)/100;
-            startColor = Color.lerp(okArcItem.colors[0], goodArcItem.colors[0],ratio);
-            endColor = Color.lerp(okArcItem.colors[1], goodArcItem.colors[1],ratio);
-          }else if(slideValue<=400){
-          ratio = (animation.value-300)/100;
-          startColor = Color.lerp(goodArcItem.colors[0], badArcItem.colors[0],ratio);
-          endColor = Color.lerp(goodArcItem.colors[1], badArcItem.colors[1],ratio);
+          if (slideValue <= 100) {
+            ratio = animation.value / 100;
+            startColor =
+                Color.lerp(badArcItem.colors[0], ughArcItem.colors[0], ratio);
+            endColor =
+                Color.lerp(badArcItem.colors[1], ughArcItem.colors[1], ratio);
+          } else if (slideValue <= 200) {
+            ratio = (animation.value - 100) / 100;
+            startColor =
+                Color.lerp(ughArcItem.colors[0], okArcItem.colors[0], ratio);
+            endColor =
+                Color.lerp(ughArcItem.colors[1], okArcItem.colors[1], ratio);
+          } else if (slideValue <= 300) {
+            ratio = (animation.value - 200) / 100;
+            startColor =
+                Color.lerp(okArcItem.colors[0], goodArcItem.colors[0], ratio);
+            endColor =
+                Color.lerp(okArcItem.colors[1], goodArcItem.colors[1], ratio);
+          } else if (slideValue <= 400) {
+            ratio = (animation.value - 300) / 100;
+            startColor =
+                Color.lerp(goodArcItem.colors[0], badArcItem.colors[0], ratio);
+            endColor =
+                Color.lerp(goodArcItem.colors[1], badArcItem.colors[1], ratio);
           }
-
         });
       });
 
@@ -110,8 +122,8 @@ class _MyReviewPageState extends State<MyReviewPage>
 
   @override
   Widget build(BuildContext context) {
-
-    var textStyle = new TextStyle(color: Colors.white, fontSize: 24.00, fontWeight: FontWeight.bold);
+    var textStyle = new TextStyle(
+        color: Colors.white, fontSize: 24.00, fontWeight: FontWeight.bold);
 
     return Container(
       margin: MediaQuery.of(context).padding,
@@ -130,7 +142,7 @@ class _MyReviewPageState extends State<MyReviewPage>
           ),
           CustomPaint(
             size: Size(MediaQuery.of(context).size.width,
-    (MediaQuery.of(context).size.width / 2)+ 80),
+                (MediaQuery.of(context).size.width / 2) + 80),
             painter: SmilePainter(slideValue),
           ),
 //          Slider(
@@ -143,7 +155,6 @@ class _MyReviewPageState extends State<MyReviewPage>
 //              });
 //            },
 //          ),
-
 
 //          new SizedBox(
 //            height: 50.0,
@@ -183,53 +194,52 @@ class _MyReviewPageState extends State<MyReviewPage>
 //            ),
 //          ),
           Stack(
-            alignment: AlignmentDirectional.bottomCenter,
+              alignment: AlignmentDirectional.bottomCenter,
               children: <Widget>[
-            ArcChooser()
-              ..arcSelectedCallback = (int pos, ArcItem item) {
-                int animPosition = pos - 2;
-                if (animPosition > 3) {
-                  animPosition = animPosition - 4;
-                }
+                ArcChooser()
+                  ..arcSelectedCallback = (int pos, ArcItem item) {
+                    int animPosition = pos - 2;
+                    if (animPosition > 3) {
+                      animPosition = animPosition - 4;
+                    }
 
-                if (animPosition < 0) {
-                  animPosition = 4 + animPosition;
-                }
+                    if (animPosition < 0) {
+                      animPosition = 4 + animPosition;
+                    }
 
-                if (lastAnimPosition == 3 && animPosition == 0) {
-                  animation.animateTo(4 * 100.0);
-                } else if (lastAnimPosition == 0 && animPosition == 3) {
-                  animation.forward(from: 4 * 100.0);
-                  animation.animateTo(animPosition * 100.0);
-                } else if (lastAnimPosition == 0 && animPosition == 1) {
-                  animation.forward(from: 0.0);
-                  animation.animateTo(animPosition * 100.0);
-                } else {
-                  animation.animateTo(animPosition * 100.0);
-                }
+                    if (lastAnimPosition == 3 && animPosition == 0) {
+                      animation.animateTo(4 * 100.0);
+                    } else if (lastAnimPosition == 0 && animPosition == 3) {
+                      animation.forward(from: 4 * 100.0);
+                      animation.animateTo(animPosition * 100.0);
+                    } else if (lastAnimPosition == 0 && animPosition == 1) {
+                      animation.forward(from: 0.0);
+                      animation.animateTo(animPosition * 100.0);
+                    } else {
+                      animation.animateTo(animPosition * 100.0);
+                    }
 
-                lastAnimPosition = animPosition;
-              },
-            Padding(
-              padding: const EdgeInsets.all(48.0),
-                child: Material(
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25.0)),
-                  elevation: 8.0,
-
-                  child: Container(
-                    width: 150.0,
-                      height: 50.0,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                            colors: [startColor, endColor]
+                    lastAnimPosition = animPosition;
+                  },
+                Padding(
+                  padding: const EdgeInsets.all(48.0),
+                  child: Material(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25.0)),
+                    elevation: 8.0,
+                    child: Container(
+                        width: 150.0,
+                        height: 50.0,
+                        decoration: BoxDecoration(
+                          gradient:
+                              LinearGradient(colors: [startColor, endColor]),
                         ),
-                      ),
-                      alignment: Alignment.center,
-                      child: Text(
-                        'SUBMIT',
-                        style: textStyle,
-                      )),
-                ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          'SUBMIT',
+                          style: textStyle,
+                        )),
+                  ),
 //              child: RaisedButton(
 //                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
 //                child: Text('SUBMIT'),
@@ -237,8 +247,8 @@ class _MyReviewPageState extends State<MyReviewPage>
 //                  print('cool');
 //                },
 //              ),
-            )
-          ]),
+                )
+              ]),
         ],
       ),
     );
