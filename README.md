@@ -9,18 +9,27 @@ Check it out on Dribbble (https://dribbble.com/shots/4332677-Review-Page-Interac
 
 # Usage
 
-For the Arc menu use ArcChooser and for the Smiley with expressions you can put the SmileyPainter in your own project.
+There are two separate components in this project
+
+<b>Arc Menu</b> and <b>Smiley with Expressions</b>
+
+  * <b>Arc Menu</b>
+  
+    To customising the bottom Arc menu use ArcChooser
+
+    Modifications can be done with Fonts,Colors and Arc item widths in Arc menu
+
+    check <a href="https://github.com/Mindinventory/Flutter-review-page-interaction/blob/master/lib/ArcChooser.dart">ArcChooser.dart</a> to customise it.
 
 
-To customise the colors of Smiley check <a href="https://github.com/Mindinventory/Flutter-review-page-interaction/blob/master/lib/SmilePainter.dart">SmilePainter.dart</a>
+  * <b>Smiley</b>
+  
+    For the Smiley with expressions you can check the SmileyPainter.
 
+    To customise the colors of Smiley check <a href="https://github.com/Mindinventory/Flutter-review-page-interaction/blob/master/lib/SmilePainter.dart">SmilePainter.dart</a>
 
-It is possible to customise the colors, Smile Patterns and Eye expressions with ReviewState
+    It is possible to customise the colors, Smile Patterns and Eye expressions with ReviewState
 
-Modifications can be done with Fonts,Colors and Arc item widths in Arc menu
-
-check <a href="https://github.com/Mindinventory/Flutter-review-page-interaction/blob/master/lib/ArcChooser.dart">ArcChooser.dart</a>
- to customise it.
 
 
 # Compatibility
