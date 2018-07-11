@@ -37,8 +37,8 @@ There are two separate components in this project
 
 # Compatibility
 
-  * Amdroid 9-27
-  * iOS 7-9
+  * Android Developer API Level 9 to 27
+  * iOS version 9 to 11
 
 # Changelog
 
