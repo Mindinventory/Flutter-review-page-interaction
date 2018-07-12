@@ -20,7 +20,7 @@ There are two separate components in this project
   
     To customising the bottom Arc menu use ArcChooser
 
-    Modifications can be done with Fonts,Colors and Arc item widths in Arc menu
+    Modifications can be done with Fonts,Colors and Arc item width in Arc menu
 
     check <a href="https://github.com/Mindinventory/Flutter-review-page-interaction/blob/master/lib/ArcChooser.dart">ArcChooser.dart</a> to customise it.
 
