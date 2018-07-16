@@ -429,26 +429,11 @@ class ReviewState {
     var endColor = Color.lerp(start.endColor, end.endColor, ratio);
 
     return ReviewState(
-        Offset(
-          lerpDouble(start.leftOffset.dx, end.leftOffset.dx, ratio),
-          lerpDouble(start.leftOffset.dy, end.leftOffset.dy, ratio),
-        ),
-        Offset(
-          lerpDouble(start.leftHandle.dx, end.leftHandle.dx, ratio),
-          lerpDouble(start.leftHandle.dy, end.leftHandle.dy, ratio),
-        ),
-        Offset(
-          lerpDouble(start.centerOffset.dx, end.centerOffset.dx, ratio),
-          lerpDouble(start.centerOffset.dy, end.centerOffset.dy, ratio),
-        ),
-        Offset(
-          lerpDouble(start.rightHandle.dx, end.rightHandle.dx, ratio),
-          lerpDouble(start.rightHandle.dy, end.rightHandle.dy, ratio),
-        ),
-        Offset(
-          lerpDouble(start.rightOffset.dx, end.rightOffset.dx, ratio),
-          lerpDouble(start.rightOffset.dy, end.rightOffset.dy, ratio),
-        ),
+        Offset.lerp(start.leftOffset,end.leftOffset, ratio),
+        Offset.lerp(start.leftHandle, end.leftHandle, ratio),
+        Offset.lerp(start.centerOffset, end.centerOffset, ratio),
+        Offset.lerp(start.rightHandle, end.rightHandle, ratio),
+        Offset.lerp(start.rightOffset, end.rightOffset, ratio),
         startColor,
         endColor,
         start.titleColor,
