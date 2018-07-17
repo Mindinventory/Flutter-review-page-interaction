@@ -184,41 +184,6 @@ class SmilePainter extends CustomPainter {
 
     //---------------------------------------------------------------
 
-    //drawing stuff for debugging-----------------------------------
-
-//    canvas.drawRect(
-//        Rect.fromLTRB(0.0, 0.0, size.width, smileHeight), debugPaint);
-//    canvas.drawRect(
-//        Rect.fromLTRB(startingX, startingY, endingX, endingY), debugPaint);
-//
-//    canvas.drawLine(
-//        Offset(startingX, startingY), Offset(endingX, endingY), debugPaint);
-//    canvas.drawLine(
-//        Offset(endingX, startingY), Offset(startingX, endingY), debugPaint);
-//    canvas.drawLine(Offset(startingX + radius, startingY),
-//        Offset(startingX + radius, endingY), debugPaint);
-//    canvas.drawLine(Offset(startingX, startingY + radius),
-//        Offset(endingX, startingY + radius), debugPaint);
-//
-//    //horizontal lines
-//    canvas.drawLine(Offset(startingX, startingY + oneThirdOfDia),
-//        Offset(endingX, startingY + oneThirdOfDia), debugPaint);
-//    canvas.drawLine(Offset(startingX, endingY - oneThirdOfDia),
-//        Offset(endingX, endingY - oneThirdOfDia), debugPaint);
-//    canvas.drawLine(Offset(startingX, endingY - oneThirdOfDiaByTwo),
-//        Offset(endingX, endingY - oneThirdOfDiaByTwo), debugPaint);
-//
-//    //vertical lines
-//    canvas.drawLine(Offset(startingX + oneThirdOfDiaByTwo, startingY),
-//        Offset(startingX + oneThirdOfDiaByTwo, endingY), debugPaint);
-//    canvas.drawLine(Offset(startingX + oneThirdOfDia, startingY),
-//        Offset(startingX + oneThirdOfDia, endingY), debugPaint);
-//    canvas.drawLine(Offset(endingX - oneThirdOfDia, startingY),
-//        Offset(endingX - oneThirdOfDia, endingY), debugPaint);
-//    canvas.drawLine(Offset(endingX - oneThirdOfDiaByTwo, startingY),
-//        Offset(endingX - oneThirdOfDiaByTwo, endingY), debugPaint);
-    //--------------------------------------------------------------
-
     //draw eyes---------------------------------------------------
     //ele calc
     final leftEyeX = startingX + oneThirdOfDia;
@@ -321,14 +286,46 @@ class SmilePainter extends CustomPainter {
 
     //---------------------------------------------------------------
 
+    //drawing stuff for debugging-----------------------------------
+
+    canvas.drawRect(
+        Rect.fromLTRB(0.0, 0.0, size.width, smileHeight), debugPaint);
+    canvas.drawRect(
+        Rect.fromLTRB(startingX, startingY, endingX, endingY), debugPaint);
+
+    canvas.drawLine(
+        Offset(startingX, startingY), Offset(endingX, endingY), debugPaint);
+    canvas.drawLine(
+        Offset(endingX, startingY), Offset(startingX, endingY), debugPaint);
+    canvas.drawLine(Offset(startingX + radius, startingY),
+        Offset(startingX + radius, endingY), debugPaint);
+    canvas.drawLine(Offset(startingX, startingY + radius),
+        Offset(endingX, startingY + radius), debugPaint);
+
+    //horizontal lines
+    canvas.drawLine(Offset(startingX, startingY + oneThirdOfDia),
+        Offset(endingX, startingY + oneThirdOfDia), debugPaint);
+    canvas.drawLine(Offset(startingX, endingY - oneThirdOfDia),
+        Offset(endingX, endingY - oneThirdOfDia), debugPaint);
+    canvas.drawLine(Offset(startingX, endingY - oneThirdOfDiaByTwo),
+        Offset(endingX, endingY - oneThirdOfDiaByTwo), debugPaint);
+
+    //vertical lines
+    canvas.drawLine(Offset(startingX + oneThirdOfDiaByTwo, startingY),
+        Offset(startingX + oneThirdOfDiaByTwo, endingY), debugPaint);
+    canvas.drawLine(Offset(startingX + oneThirdOfDia, startingY),
+        Offset(startingX + oneThirdOfDia, endingY), debugPaint);
+    canvas.drawLine(Offset(endingX - oneThirdOfDia, startingY),
+        Offset(endingX - oneThirdOfDia, endingY), debugPaint);
+    canvas.drawLine(Offset(endingX - oneThirdOfDiaByTwo, startingY),
+        Offset(endingX - oneThirdOfDiaByTwo, endingY), debugPaint);
+    //--------------------------------------------------------------
+
   }
 
   tweenText(ReviewState centerReview, ReviewState rightReview, double diff,
       Canvas canvas) {
     currentState = ReviewState.lerp(centerReview, rightReview, diff);
-
-    //tweening between bad 0 to ugh 100
-    //Draw text
 
     TextSpan spanCenter = new TextSpan(
         style: new TextStyle(
