@@ -288,37 +288,37 @@ class SmilePainter extends CustomPainter {
 
     //drawing stuff for debugging-----------------------------------
 
-    canvas.drawRect(
-        Rect.fromLTRB(0.0, 0.0, size.width, smileHeight), debugPaint);
-    canvas.drawRect(
-        Rect.fromLTRB(startingX, startingY, endingX, endingY), debugPaint);
-
-    canvas.drawLine(
-        Offset(startingX, startingY), Offset(endingX, endingY), debugPaint);
-    canvas.drawLine(
-        Offset(endingX, startingY), Offset(startingX, endingY), debugPaint);
-    canvas.drawLine(Offset(startingX + radius, startingY),
-        Offset(startingX + radius, endingY), debugPaint);
-    canvas.drawLine(Offset(startingX, startingY + radius),
-        Offset(endingX, startingY + radius), debugPaint);
-
-    //horizontal lines
-    canvas.drawLine(Offset(startingX, startingY + oneThirdOfDia),
-        Offset(endingX, startingY + oneThirdOfDia), debugPaint);
-    canvas.drawLine(Offset(startingX, endingY - oneThirdOfDia),
-        Offset(endingX, endingY - oneThirdOfDia), debugPaint);
-    canvas.drawLine(Offset(startingX, endingY - oneThirdOfDiaByTwo),
-        Offset(endingX, endingY - oneThirdOfDiaByTwo), debugPaint);
-
-    //vertical lines
-    canvas.drawLine(Offset(startingX + oneThirdOfDiaByTwo, startingY),
-        Offset(startingX + oneThirdOfDiaByTwo, endingY), debugPaint);
-    canvas.drawLine(Offset(startingX + oneThirdOfDia, startingY),
-        Offset(startingX + oneThirdOfDia, endingY), debugPaint);
-    canvas.drawLine(Offset(endingX - oneThirdOfDia, startingY),
-        Offset(endingX - oneThirdOfDia, endingY), debugPaint);
-    canvas.drawLine(Offset(endingX - oneThirdOfDiaByTwo, startingY),
-        Offset(endingX - oneThirdOfDiaByTwo, endingY), debugPaint);
+//    canvas.drawRect(
+//        Rect.fromLTRB(0.0, 0.0, size.width, smileHeight), debugPaint);
+//    canvas.drawRect(
+//        Rect.fromLTRB(startingX, startingY, endingX, endingY), debugPaint);
+//
+//    canvas.drawLine(
+//        Offset(startingX, startingY), Offset(endingX, endingY), debugPaint);
+//    canvas.drawLine(
+//        Offset(endingX, startingY), Offset(startingX, endingY), debugPaint);
+//    canvas.drawLine(Offset(startingX + radius, startingY),
+//        Offset(startingX + radius, endingY), debugPaint);
+//    canvas.drawLine(Offset(startingX, startingY + radius),
+//        Offset(endingX, startingY + radius), debugPaint);
+//
+//    //horizontal lines
+//    canvas.drawLine(Offset(startingX, startingY + oneThirdOfDia),
+//        Offset(endingX, startingY + oneThirdOfDia), debugPaint);
+//    canvas.drawLine(Offset(startingX, endingY - oneThirdOfDia),
+//        Offset(endingX, endingY - oneThirdOfDia), debugPaint);
+//    canvas.drawLine(Offset(startingX, endingY - oneThirdOfDiaByTwo),
+//        Offset(endingX, endingY - oneThirdOfDiaByTwo), debugPaint);
+//
+//    //vertical lines
+//    canvas.drawLine(Offset(startingX + oneThirdOfDiaByTwo, startingY),
+//        Offset(startingX + oneThirdOfDiaByTwo, endingY), debugPaint);
+//    canvas.drawLine(Offset(startingX + oneThirdOfDia, startingY),
+//        Offset(startingX + oneThirdOfDia, endingY), debugPaint);
+//    canvas.drawLine(Offset(endingX - oneThirdOfDia, startingY),
+//        Offset(endingX - oneThirdOfDia, endingY), debugPaint);
+//    canvas.drawLine(Offset(endingX - oneThirdOfDiaByTwo, startingY),
+//        Offset(endingX - oneThirdOfDiaByTwo, endingY), debugPaint);
     //--------------------------------------------------------------
 
   }
