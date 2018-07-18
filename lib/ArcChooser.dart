@@ -97,68 +97,64 @@ class ChooserState extends State<ArcChooser> with SingleTickerProviderStateMixin
     double centerY = MediaQuery.of(context).size.height * 1.5;
     centerPoint = Offset(centerX, centerY);
 
-    return new SizedBox(
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.width * 3 / 4,
-      child: new GestureDetector(
+    return new GestureDetector(
 //        onTap: () {
 //          print('ChooserState.build ONTAP');
 //          animationStart = touchAngle;
 //          animationEnd = touchAngle + angleInRadians;
 //          animation.forward(from: 0.0);
 //        },
-        onPanStart: (DragStartDetails details) {
-          startingPoint = details.globalPosition;
-          var deltaX = centerPoint.dx - details.globalPosition.dx;
-          var deltaY = centerPoint.dy - details.globalPosition.dy;
-          startAngle = atan2(deltaY, deltaX);
-        },
-        onPanUpdate: (DragUpdateDetails details) {
-          endingPoint = details.globalPosition;
-          var deltaX = centerPoint.dx - details.globalPosition.dx;
-          var deltaY = centerPoint.dy - details.globalPosition.dy;
-          var freshAngle = atan2(deltaY, deltaX);
-          userAngle += freshAngle - startAngle;
-          setState(() {
-            for (int i = 0; i < arcItems.length; i++) {
-              arcItems[i].startAngle =
-                  angleInRadiansByTwo + userAngle + (i * angleInRadians);
-            }
-          });
-          startAngle = freshAngle;
-        },
-        onPanEnd: (DragEndDetails details){
+      onPanStart: (DragStartDetails details) {
+        startingPoint = details.globalPosition;
+        var deltaX = centerPoint.dx - details.globalPosition.dx;
+        var deltaY = centerPoint.dy - details.globalPosition.dy;
+        startAngle = atan2(deltaY, deltaX);
+      },
+      onPanUpdate: (DragUpdateDetails details) {
+        endingPoint = details.globalPosition;
+        var deltaX = centerPoint.dx - details.globalPosition.dx;
+        var deltaY = centerPoint.dy - details.globalPosition.dy;
+        var freshAngle = atan2(deltaY, deltaX);
+        userAngle += freshAngle - startAngle;
+        setState(() {
+          for (int i = 0; i < arcItems.length; i++) {
+            arcItems[i].startAngle =
+                angleInRadiansByTwo + userAngle + (i * angleInRadians);
+          }
+        });
+        startAngle = freshAngle;
+      },
+      onPanEnd: (DragEndDetails details){
 
-          //find top arc item with Magic!!
-          bool rightToLeft = startingPoint.dx<endingPoint.dx;
+        //find top arc item with Magic!!
+        bool rightToLeft = startingPoint.dx<endingPoint.dx;
 
 //        Animate it from this values
-          animationStart = userAngle;
-          if(rightToLeft) {
-            animationEnd +=angleInRadians;
-            currentPosition--;
-            if(currentPosition<0){
-              currentPosition = arcItems.length-1;
-            }
-          }else{
-            animationEnd -=angleInRadians;
-            currentPosition++;
-            if(currentPosition>=arcItems.length){
-              currentPosition = 0;
-            }
+        animationStart = userAngle;
+        if(rightToLeft) {
+          animationEnd +=angleInRadians;
+          currentPosition--;
+          if(currentPosition<0){
+            currentPosition = arcItems.length-1;
           }
-
-          if(arcSelectedCallback!=null){
-            arcSelectedCallback(currentPosition, arcItems[(currentPosition>=(arcItems.length-1))?0:currentPosition+1]);
+        }else{
+          animationEnd -=angleInRadians;
+          currentPosition++;
+          if(currentPosition>=arcItems.length){
+            currentPosition = 0;
           }
+        }
 
-          animation.forward(from: 0.0);
-        },
-        child: CustomPaint(
-          size: Size(MediaQuery.of(context).size.width,
-              MediaQuery.of(context).size.width / 2),
-          painter: ChooserPainter(arcItems, angleInRadians),
-        ),
+        if(arcSelectedCallback!=null){
+          arcSelectedCallback(currentPosition, arcItems[(currentPosition>=(arcItems.length-1))?0:currentPosition+1]);
+        }
+
+        animation.forward(from: 0.0);
+      },
+      child: CustomPaint(
+        size: Size(MediaQuery.of(context).size.width,
+          MediaQuery.of(context).size.width * 1 / 1.5),
+        painter: ChooserPainter(arcItems, angleInRadians),
       ),
     );
   }
@@ -207,7 +203,7 @@ class ChooserPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     //common calc
     double centerX = size.width / 2;
-    double centerY = size.height * 1.5;
+    double centerY = size.height * 1.6;
     Offset center = Offset(centerX, centerY);
     double radius = sqrt((size.width * size.width) / 2);
 
@@ -239,7 +235,10 @@ class ChooserPainter extends CustomPainter {
     double radius5 = radius * 1.06;
     var arcRect = Rect.fromLTRB(leftX2, topY2, rightX2, bottomY2);
 
+
     var dummyRect = Rect.fromLTRB(0.0, 0.0, size.width, size.height);
+
+    canvas.clipRect(dummyRect, clipOp: ClipOp.intersect);
 
     for (int i = 0; i < arcItems.length; i++) {
       canvas.drawArc(
@@ -326,6 +325,7 @@ class ChooserPainter extends CustomPainter {
         ChooserState.degreeToRadians(180.0),
         true,
         whitePaint);
+
   }
 
   @override

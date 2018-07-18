@@ -142,7 +142,7 @@ class _MyReviewPageState extends State<MyReviewPage>
           ),
           CustomPaint(
             size: Size(MediaQuery.of(context).size.width,
-                (MediaQuery.of(context).size.width / 2) + 80),
+                (MediaQuery.of(context).size.width / 2) + 60),
             painter: SmilePainter(slideValue),
           ),
 //          Slider(
@@ -222,7 +222,7 @@ class _MyReviewPageState extends State<MyReviewPage>
                     lastAnimPosition = animPosition;
                   },
                 Padding(
-                  padding: const EdgeInsets.all(48.0),
+                  padding: const EdgeInsets.all(28.0),
                   child: Material(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(25.0)),
