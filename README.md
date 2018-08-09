@@ -7,6 +7,7 @@ Check it out on Béhance (https://www.behance.net/gallery/63142605/Review-Page-I
 
 Check it out on Dribbble (https://dribbble.com/shots/4332677-Review-Page-Interaction)
 
+Read about how we made this on our blog (https://www.mindinventory.com/blog/create-review-page-custom-widgets-with-flutter/)
 
 <img src="https://cdn.dribbble.com/users/1233499/screenshots/4332677/mockup1-1.gif" >
 
