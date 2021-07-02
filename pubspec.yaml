@@ -1,6 +1,9 @@
 name: review
 description: An innovative review page.
 
+environment:
+  sdk: '>=2.10.0 <3.0.0'
+
 dependencies:
   flutter:
     sdk: flutter
@@ -13,7 +16,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  flutter_launcher_icons: "^0.4.0"
+  flutter_launcher_icons: ^0.9.0
 
 flutter_icons:
   image_path: "/home/dhruv/StudioProjects/review/ic_launcher/web_hi_res_512.png"
