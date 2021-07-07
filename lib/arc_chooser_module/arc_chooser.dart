@@ -4,8 +4,8 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:review/common/app_color.dart';
-import 'model/arc_item_model.dart';
-import 'common/choose_painter.dart';
+import '../model/arc_item_model.dart';
+import 'choose_painter.dart';
 
 class ArcChooser extends StatefulWidget {
   ArcSelectedCallback arcSelectedCallback;
@@ -52,29 +52,25 @@ class ChooserState extends State<ArcChooser> with SingleTickerProviderStateMixin
     return degree * (pi / 180);
   }
 
-  /*static double radianToDegrees(double radian) {
-    return radian * (180 / pi);
-  }*/
-
   @override
   void initState() {
     arcItems = <ArcItemModel>[];
 
     arcItems
-      ..add(ArcItemModel("UGH", [AppColors.F9D976, AppColors.f39f86], angleInRadiansByTwo + userAngle))
+      ..add(ArcItemModel("Ugh", [AppColors.F9D976, AppColors.f39f86], angleInRadiansByTwo + userAngle))
       ..add(ArcItemModel(
-          "OK", [AppColors.c21e1fa, AppColors.c3bb8fd], angleInRadiansByTwo + userAngle + (angleInRadians)))
-      ..add(ArcItemModel("GOOD", [AppColors.c3ee98a, AppColors.c41f7c7],
+          "Ok", [AppColors.c21e1fa, AppColors.c3bb8fd], angleInRadiansByTwo + userAngle + (angleInRadians)))
+      ..add(ArcItemModel("Good", [AppColors.c3ee98a, AppColors.c41f7c7],
           angleInRadiansByTwo + userAngle + (2 * angleInRadians)))
-      ..add(ArcItemModel("BAD", [AppColors.fe0944, AppColors.feae96],
+      ..add(ArcItemModel("Bad", [AppColors.fe0944, AppColors.feae96],
           angleInRadiansByTwo + userAngle + (3 * angleInRadians)))
-      ..add(ArcItemModel("UGH", [AppColors.F9D976, AppColors.f39f86],
+      ..add(ArcItemModel("Ugh", [AppColors.F9D976, AppColors.f39f86],
           angleInRadiansByTwo + userAngle + (4 * angleInRadians)))
-      ..add(ArcItemModel("OK", [AppColors.c21e1fa, AppColors.c3bb8fd],
+      ..add(ArcItemModel("Ok", [AppColors.c21e1fa, AppColors.c3bb8fd],
           angleInRadiansByTwo + userAngle + (5 * angleInRadians)))
-      ..add(ArcItemModel("GOOD", [AppColors.c3ee98a, AppColors.c41f7c7],
+      ..add(ArcItemModel("Good", [AppColors.c3ee98a, AppColors.c41f7c7],
           angleInRadiansByTwo + userAngle + (6 * angleInRadians)))
-      ..add(ArcItemModel("BAD", [AppColors.fe0944, AppColors.feae96],
+      ..add(ArcItemModel("Bad", [AppColors.fe0944, AppColors.feae96],
           angleInRadiansByTwo + userAngle + (7 * angleInRadians)));
 
     animation = AnimationController(duration: const Duration(milliseconds: 200), vsync: this);
@@ -100,12 +96,6 @@ class ChooserState extends State<ArcChooser> with SingleTickerProviderStateMixin
 
   Widget _gestureDetectorForSlider() {
     return GestureDetector(
-      /*onTap: () {
-         print('ChooserState.build onTap');
-         animationStart = touchAngle;
-         animationEnd = touchAngle + angleInRadians;
-         animation.forward(from: 0.0);
-       },*/
       onPanStart: (DragStartDetails details) {
         startingPoint = details.globalPosition;
         var deltaX = centerPoint.dx - details.globalPosition.dx;
@@ -154,10 +144,10 @@ class ChooserState extends State<ArcChooser> with SingleTickerProviderStateMixin
       },
       child: CustomPaint(
         size: Size(MediaQuery.of(context).size.width, MediaQuery.of(context).size.width * 1 / 1.5),
-        painter: ChooserPainter(arcItems: arcItems, angleInRadians: angleInRadians,isLine: true),
+        painter: ChooserPainter(arcItems: arcItems, angleInRadians: angleInRadians, isLine: true),
       ),
     );
   }
 }
 
-typedef void ArcSelectedCallback(int position, ArcItemModel arcitem);
+typedef void ArcSelectedCallback(int position, ArcItemModel arcItem);

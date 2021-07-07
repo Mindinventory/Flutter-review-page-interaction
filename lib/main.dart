@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:review/smile_painter.dart';
+import 'package:review/arc_chooser_module/arc_chooser.dart';
+import 'package:review/button_module/button_widget.dart';
+import 'package:review/smile_painter_module/smile_painter.dart';
 import 'package:review/common/app_color.dart';
 
-import 'arc_chosser.dart';
 import 'model/arc_item_model.dart';
 
 void main() {
@@ -39,13 +40,8 @@ class MyReviewPage extends StatefulWidget {
 }
 
 class _MyReviewPageState extends State<MyReviewPage> with TickerProviderStateMixin {
-  /*final PageController pageControl = new PageController(
-    initialPage: 2,
-    keepPage: false,
-    viewportFraction: 0.2,
-  );*/
-
-  var textStyle = new TextStyle(color: AppColors.white, fontSize: 24.00, fontWeight: FontWeight.bold);
+  // var textStyleForButton = TextStyle(color: AppColors.white, fontSize: 24.00, fontWeight: FontWeight.w500);
+  var textStyleForText = TextStyle(color: AppColors.black, fontSize: 22.0, fontWeight: FontWeight.w500);
 
   int slideValue = 200;
   int lastAnimPosition = 2;
@@ -72,9 +68,6 @@ class _MyReviewPageState extends State<MyReviewPage> with TickerProviderStateMix
     goodArcItem = ArcItemModel("GOOD", [AppColors.c3ee98a, AppColors.c41f7c7], 0.0);
 
     arcItems..add(badArcItem)..add(ughArcItem)..add(okArcItem)..add(goodArcItem);
-    /*arcItems.add(ughArcItem);
-    arcItems.add(okArcItem);
-    arcItems.add(goodArcItem);*/
 
     startColor = AppColors.c21e1fa;
     endColor = AppColors.c3bb8fd;
@@ -86,30 +79,30 @@ class _MyReviewPageState extends State<MyReviewPage> with TickerProviderStateMix
       duration: const Duration(milliseconds: 800),
       vsync: this,
     )..addListener(() {
-      setState(() {
-        slideValue = animation.value.toInt();
+        setState(() {
+          slideValue = animation.value.toInt();
 
-        double ratio;
+          double ratio;
 
-        if (slideValue <= 100) {
-          ratio = animation.value / 100;
-          startColor = Color.lerp(badArcItem.colors[0], ughArcItem.colors[0], ratio);
-          endColor = Color.lerp(badArcItem.colors[1], ughArcItem.colors[1], ratio);
-        } else if (slideValue <= 200) {
-          ratio = (animation.value - 100) / 100;
-          startColor = Color.lerp(ughArcItem.colors[0], okArcItem.colors[0], ratio);
-          endColor = Color.lerp(ughArcItem.colors[1], okArcItem.colors[1], ratio);
-        } else if (slideValue <= 300) {
-          ratio = (animation.value - 200) / 100;
-          startColor = Color.lerp(okArcItem.colors[0], goodArcItem.colors[0], ratio);
-          endColor = Color.lerp(okArcItem.colors[1], goodArcItem.colors[1], ratio);
-        } else if (slideValue <= 400) {
-          ratio = (animation.value - 300) / 100;
-          startColor = Color.lerp(goodArcItem.colors[0], badArcItem.colors[0], ratio);
-          endColor = Color.lerp(goodArcItem.colors[1], badArcItem.colors[1], ratio);
-        }
+          if (slideValue <= 100) {
+            ratio = animation.value / 100;
+            startColor = Color.lerp(badArcItem.colors[0], ughArcItem.colors[0], ratio);
+            endColor = Color.lerp(badArcItem.colors[1], ughArcItem.colors[1], ratio);
+          } else if (slideValue <= 200) {
+            ratio = (animation.value - 100) / 100;
+            startColor = Color.lerp(ughArcItem.colors[0], okArcItem.colors[0], ratio);
+            endColor = Color.lerp(ughArcItem.colors[1], okArcItem.colors[1], ratio);
+          } else if (slideValue <= 300) {
+            ratio = (animation.value - 200) / 100;
+            startColor = Color.lerp(okArcItem.colors[0], goodArcItem.colors[0], ratio);
+            endColor = Color.lerp(okArcItem.colors[1], goodArcItem.colors[1], ratio);
+          } else if (slideValue <= 400) {
+            ratio = (animation.value - 300) / 100;
+            startColor = Color.lerp(goodArcItem.colors[0], badArcItem.colors[0], ratio);
+            endColor = Color.lerp(goodArcItem.colors[1], badArcItem.colors[1], ratio);
+          }
+        });
       });
-    });
 
     animation.animateTo(slideValue.toDouble());
   }
@@ -127,7 +120,7 @@ class _MyReviewPageState extends State<MyReviewPage> with TickerProviderStateMix
               child: Text(
                 "How was your experience with us?",
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.headline5,
+                style: textStyleForText,
               ),
             ),
           ),
@@ -135,54 +128,6 @@ class _MyReviewPageState extends State<MyReviewPage> with TickerProviderStateMix
             size: Size(MediaQuery.of(context).size.width, (MediaQuery.of(context).size.width / 2) + 60),
             painter: SmilePainter(slideValue),
           ),
-          /*Slider(
-           min: 0.0,
-           max: 400.0,
-           value: slideValue.toDouble(),
-           onChanged: (double newValue) {
-             setState(() {
-               slideValue = newValue.round();
-             });
-           },
-         ),
-
-         new SizedBox(
-           height: 50.0,
-           child: new NotificationListener(
-             onNotification: (ScrollNotification notification){
-               if(!notification.metrics.atEdge){
-                 print('_MyReviewPageState.build ' + MediaQuery.of(context).size.width.toString() + " " + notification.metrics.pixels.toString());
-               }
-
-             },
-             child: PageView.builder(
-               pageSnapping: true,
-               onPageChanged: (int value) {
-                 print('_MyReviewPageState._onPageChanged ' + value.toString());
-                 animation.animateTo(value*100.0);
-               },
-               controller: pageControl,
-               itemCount: arcItems.length,
-               physics: new AlwaysScrollableScrollPhysics(),
-               itemBuilder: (context, index) {
-                 return new Container(
-                     decoration: new BoxDecoration(
-                       gradient: new LinearGradient(
-                           colors: [
-                             arcItems[index].colors[0],
-                             arcItems[index].colors[1]
-                           ]
-                       ),
-                     ),
-                     alignment: Alignment.center,
-                     child: new Text(
-                       arcItems[index].text,
-                       style: textStyle,
-                     ));
-               },
-             ),
-           ),
-         ),*/
           Stack(
             alignment: AlignmentDirectional.bottomCenter,
             children: <Widget>[
@@ -211,32 +156,32 @@ class _MyReviewPageState extends State<MyReviewPage> with TickerProviderStateMix
 
                   lastAnimPosition = animPosition;
                 },
-              Padding(
+              SubmitButton(startColor: startColor,endColor: endColor,),
+              /*Padding(
                 padding: const EdgeInsets.all(28.0),
                 child: Material(
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25.0)),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(55.0)),
                   elevation: 8.0,
-                  child: Container(
-                    width: 150.0,
-                    height: 50.0,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(colors: [startColor, endColor]),
+                  child: InkWell(
+                    child: Container(
+                      width: 150.0,
+                      height: 50.0,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(colors: [startColor, endColor]),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(8.0),
+                        ),
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(
+                        'Submit',
+                        style: textStyleForButton,
+                      ),
                     ),
-                    alignment: Alignment.center,
-                    child: Text(
-                      'SUBMIT',
-                      style: textStyle,
-                    ),
+                    onTap: () {},
                   ),
                 ),
-                /*child: RaisedButton(
-               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
-               child: Text('SUBMIT'),
-               onPressed: () {
-                 print('cool');
-               },
-             ),*/
-              ),
+              ),*/
             ],
           ),
         ],

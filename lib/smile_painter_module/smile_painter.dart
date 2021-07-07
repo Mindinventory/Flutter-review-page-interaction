@@ -2,20 +2,23 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:review/common/app_color.dart';
-import 'common/review_state.dart';
+import 'package:review/text_module/text_animation.dart';
+import 'review_state.dart';
 
 class SmilePainter extends CustomPainter {
   //debugging Paint
   final debugPaint = Paint()
-    ..color = Colors.grey //0xFFF9D976
+    ..color = AppColors.grey
     ..strokeWidth = 1.0
     ..style = PaintingStyle.stroke;
 
   final whitePaint = Paint()
-    ..color = Colors.white //0xFFF9D976
+    ..color = AppColors.white
     ..style = PaintingStyle.fill;
 
   int slideValue = 200;
+
+  TextAnimation _textAnimation = TextAnimation();
 
   ReviewState badReview;
   ReviewState ughReview;
@@ -98,7 +101,7 @@ class SmilePainter extends CustomPainter {
           AppColors.fe0944,
           AppColors.feae96,
           AppColors.fe5c6e,
-          'BAD');
+          'Bad');
 
       // Draw UGH expression smiley
       ughReview = ReviewState(
@@ -110,7 +113,7 @@ class SmilePainter extends CustomPainter {
           AppColors.F9D976,
           AppColors.f39f86,
           AppColors.f6bc7e,
-          'UGH');
+          'Ugh');
 
       // Draw OK expression smiley
       okReview = ReviewState(
@@ -122,7 +125,7 @@ class SmilePainter extends CustomPainter {
           AppColors.c21e1fa,
           AppColors.c3bb8fd,
           AppColors.c28cdfc,
-          'OK');
+          'Ok');
 
       // Draw GOOD expression smiley
       goodReview = ReviewState(
@@ -134,7 +137,7 @@ class SmilePainter extends CustomPainter {
           AppColors.c3ee98a,
           AppColors.c41f7c7,
           AppColors.c41f7c6,
-          'GOOD');
+          'Good');
 
       //get max width of text, that is width of GOOD text
       TextSpan spanGood = TextSpan(
@@ -152,13 +155,17 @@ class SmilePainter extends CustomPainter {
     }
 
     if (slideValue <= 100) {
-      tweenText(badReview, ughReview, slideValue / 100, canvas);
+      currentState = _textAnimation.tweenText(
+          badReview, ughReview, slideValue / 100, canvas, centerCenter, rightCenter, smileHeight, leftCenter);
     } else if (slideValue <= 200) {
-      tweenText(ughReview, okReview, (slideValue - 100) / 100, canvas);
+      currentState = _textAnimation.tweenText(ughReview, okReview, (slideValue - 100) / 100, canvas, centerCenter,
+          rightCenter, smileHeight, leftCenter);
     } else if (slideValue <= 300) {
-      tweenText(okReview, goodReview, (slideValue - 200) / 100, canvas);
+      currentState = _textAnimation.tweenText(okReview, goodReview, (slideValue - 200) / 100, canvas, centerCenter,
+          rightCenter, smileHeight, leftCenter);
     } else if (slideValue <= 400) {
-      tweenText(goodReview, badReview, (slideValue - 300) / 100, canvas);
+      currentState = _textAnimation.tweenText(goodReview, badReview, (slideValue - 300) / 100, canvas, centerCenter,
+          rightCenter, smileHeight, leftCenter);
     }
 
     //------------------draw the outer circle-------------------
@@ -276,50 +283,14 @@ class SmilePainter extends CustomPainter {
               eyeY - (eyeRadius + eyeRadiusByThree)),
           whitePaint);
     }
-    //---------------------------------------------------------------
-
-    //drawing stuff for debugging-----------------------------------
-
-    /*canvas.drawRect(
-       Rect.fromLTRB(0.0, 0.0, size.width, smileHeight), debugPaint);
-   canvas.drawRect(
-       Rect.fromLTRB(startingX, startingY, endingX, endingY), debugPaint);
-
-   canvas.drawLine(
-       Offset(startingX, startingY), Offset(endingX, endingY), debugPaint);
-   canvas.drawLine(
-       Offset(endingX, startingY), Offset(startingX, endingY), debugPaint);
-   canvas.drawLine(Offset(startingX + radius, startingY),
-       Offset(startingX + radius, endingY), debugPaint);
-   canvas.drawLine(Offset(startingX, startingY + radius),
-       Offset(endingX, startingY + radius), debugPaint);
-
-   //horizontal lines
-   canvas.drawLine(Offset(startingX, startingY + oneThirdOfDia),
-       Offset(endingX, startingY + oneThirdOfDia), debugPaint);
-   canvas.drawLine(Offset(startingX, endingY - oneThirdOfDia),
-       Offset(endingX, endingY - oneThirdOfDia), debugPaint);
-   canvas.drawLine(Offset(startingX, endingY - oneThirdOfDiaByTwo),
-       Offset(endingX, endingY - oneThirdOfDiaByTwo), debugPaint);
-
-   //vertical lines
-   canvas.drawLine(Offset(startingX + oneThirdOfDiaByTwo, startingY),
-       Offset(startingX + oneThirdOfDiaByTwo, endingY), debugPaint);
-   canvas.drawLine(Offset(startingX + oneThirdOfDia, startingY),
-       Offset(startingX + oneThirdOfDia, endingY), debugPaint);
-   canvas.drawLine(Offset(endingX - oneThirdOfDia, startingY),
-       Offset(endingX - oneThirdOfDia, endingY), debugPaint);
-   canvas.drawLine(Offset(endingX - oneThirdOfDiaByTwo, startingY),
-       Offset(endingX - oneThirdOfDiaByTwo, endingY), debugPaint);*/
-    //--------------------------------------------------------------
   }
 
-  tweenText(ReviewState centerReview, ReviewState rightReview, double diff, Canvas canvas) {
+  /*tweenText(ReviewState centerReview, ReviewState rightReview, double diff, Canvas canvas) {
     currentState = ReviewState.lerp(centerReview, rightReview, diff);
 
     TextSpan spanCenter = TextSpan(
         style: TextStyle(
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w500,
             fontSize: 52.0,
             color: centerReview.titleColor.withAlpha(255 - (255 * diff).round())),
         text: centerReview.title);
@@ -327,7 +298,7 @@ class SmilePainter extends CustomPainter {
 
     TextSpan spanRight = TextSpan(
         style: TextStyle(
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w500,
             fontSize: 52.0,
             color: rightReview.titleColor.withAlpha((255 * diff).round())),
         text: rightReview.title);
@@ -344,7 +315,7 @@ class SmilePainter extends CustomPainter {
 
     tpCenter.paint(canvas, Offset.lerp(centerOffset, centerToLeftOffset, diff));
     tpRight.paint(canvas, Offset.lerp(rightOffset, rightToCenterOffset, diff));
-  }
+  }*/
 
   Path getSmilePath(ReviewState state) {
     var smilePath = Path();

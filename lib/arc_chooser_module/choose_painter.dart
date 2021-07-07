@@ -1,12 +1,13 @@
 import 'dart:math';
 import 'dart:ui';
 
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
-import '../arc_chosser.dart';
-import 'app_color.dart';
-import '../model/arc_item_model.dart';
+import 'arc_chooser.dart';
+import '../common/app_color.dart';
+import 'package:review/model/arc_item_model.dart';
 
 // draw the arc and other stuff
 class ChooserPainter extends CustomPainter {
@@ -37,7 +38,7 @@ class ChooserPainter extends CustomPainter {
       angleInRadians3,
       angleInRadians4;
 
-  ChooserPainter({List<ArcItemModel> arcItems, double angleInRadians, @required bool isLine}) {
+  ChooserPainter({List<ArcItemModel> arcItems, double angleInRadians, bool isLine}) {
     this.arcItems = arcItems;
     this.angleInRadians = angleInRadians;
     this.angleInRadiansByTwo = angleInRadians / 2;
@@ -57,8 +58,8 @@ class ChooserPainter extends CustomPainter {
     Offset center = Offset(centerX, centerY);
     double radius = sqrt((size.width * size.width) / 2);
 
-//    var mainRect = Rect.fromLTRB(0.0, 0.0, size.width, size.height);
-//    canvas.drawRect(mainRect, debugPaint);
+    //var mainRect = Rect.fromLTRB(0.0, 0.0, size.width, size.height);
+    //canvas.drawRect(mainRect, debugPaint);
 
     //for white arc at bottom
     double leftX = centerX - radius;
