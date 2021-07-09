@@ -13,20 +13,20 @@ void main() {
     DeviceOrientation.portraitDown,
     DeviceOrientation.portraitUp,
   ]);
-  runApp(new MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return new MaterialApp(
-      theme: new ThemeData(
+    return MaterialApp(
+      theme: ThemeData(
         primarySwatch: AppColors.red,
       ),
       debugShowCheckedModeBanner: false,
-      home: new Scaffold(
+      home: Scaffold(
         backgroundColor: AppColors.white,
-        body: new MyReviewPage(),
+        body: MyReviewPage(),
       ),
     );
   }
@@ -36,7 +36,7 @@ class MyReviewPage extends StatefulWidget {
   MyReviewPage({Key key}) : super(key: key);
 
   @override
-  _MyReviewPageState createState() => new _MyReviewPageState();
+  _MyReviewPageState createState() => _MyReviewPageState();
 }
 
 class _MyReviewPageState extends State<MyReviewPage> with TickerProviderStateMixin {
@@ -157,31 +157,6 @@ class _MyReviewPageState extends State<MyReviewPage> with TickerProviderStateMix
                   lastAnimPosition = animPosition;
                 },
               SubmitButton(startColor: startColor,endColor: endColor,),
-              /*Padding(
-                padding: const EdgeInsets.all(28.0),
-                child: Material(
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(55.0)),
-                  elevation: 8.0,
-                  child: InkWell(
-                    child: Container(
-                      width: 150.0,
-                      height: 50.0,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(colors: [startColor, endColor]),
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(8.0),
-                        ),
-                      ),
-                      alignment: Alignment.center,
-                      child: Text(
-                        'Submit',
-                        style: textStyleForButton,
-                      ),
-                    ),
-                    onTap: () {},
-                  ),
-                ),
-              ),*/
             ],
           ),
         ],

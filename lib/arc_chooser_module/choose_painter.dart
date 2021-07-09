@@ -12,18 +12,18 @@ import 'package:review/model/arc_item_model.dart';
 // draw the arc and other stuff
 class ChooserPainter extends CustomPainter {
   //debugging Paint
-  final debugPaint = new Paint()
+  final debugPaint = Paint()
     ..color = Colors.red.withAlpha(100) //0xFFF9D976
     ..strokeWidth = 1.0
     ..style = PaintingStyle.stroke;
 
-  final linePaint = new Paint()
+  final linePaint = Paint()
     ..color = Colors.black.withAlpha(65) //0xFFF9D976
     ..strokeWidth = 2.0
     ..style = PaintingStyle.stroke
     ..strokeCap = StrokeCap.square;
 
-  final whitePaint = new Paint()
+  final whitePaint = Paint()
     ..color = AppColors.white //0xFFF9D976
     ..strokeWidth = 1.0
     ..style = PaintingStyle.fill;
@@ -93,38 +93,38 @@ class ChooserPainter extends CustomPainter {
     void _drawLines(int i) {
       //big lines
       canvas.drawLine(
-          new Offset(center.dx + radius4 * cos(arcItems[i].startAngle),
+          Offset(center.dx + radius4 * cos(arcItems[i].startAngle),
               center.dy + radius4 * sin(arcItems[i].startAngle)),
           center,
           linePaint);
 
       canvas.drawLine(
-          new Offset(center.dx + radius4 * cos(arcItems[i].startAngle + angleInRadiansByTwo),
+          Offset(center.dx + radius4 * cos(arcItems[i].startAngle + angleInRadiansByTwo),
               center.dy + radius4 * sin(arcItems[i].startAngle + angleInRadiansByTwo)),
           center,
           linePaint);
 
       //small lines
       canvas.drawLine(
-          new Offset(center.dx + radius5 * cos(arcItems[i].startAngle + angleInRadians1),
+          Offset(center.dx + radius5 * cos(arcItems[i].startAngle + angleInRadians1),
               center.dy + radius5 * sin(arcItems[i].startAngle + angleInRadians1)),
           center,
           linePaint);
 
       canvas.drawLine(
-          new Offset(center.dx + radius5 * cos(arcItems[i].startAngle + angleInRadians2),
+          Offset(center.dx + radius5 * cos(arcItems[i].startAngle + angleInRadians2),
               center.dy + radius5 * sin(arcItems[i].startAngle + angleInRadians2)),
           center,
           linePaint);
 
       canvas.drawLine(
-          new Offset(center.dx + radius5 * cos(arcItems[i].startAngle + angleInRadians3),
+          Offset(center.dx + radius5 * cos(arcItems[i].startAngle + angleInRadians3),
               center.dy + radius5 * sin(arcItems[i].startAngle + angleInRadians3)),
           center,
           linePaint);
 
       canvas.drawLine(
-          new Offset(center.dx + radius5 * cos(arcItems[i].startAngle + angleInRadians4),
+          Offset(center.dx + radius5 * cos(arcItems[i].startAngle + angleInRadians4),
               center.dy + radius5 * sin(arcItems[i].startAngle + angleInRadians4)),
           center,
           linePaint);
@@ -136,17 +136,17 @@ class ChooserPainter extends CustomPainter {
           arcItems[i].startAngle,
           angleInRadians,
           true,
-          new Paint()
+          Paint()
             ..style = PaintingStyle.fill
-            ..shader = new LinearGradient(
+            ..shader = LinearGradient(
               colors: arcItems[i].colors,
             ).createShader(dummyRect));
 
       //Draw text
-      TextSpan span = new TextSpan(
-          style: new TextStyle(fontWeight: FontWeight.normal, fontSize: 32.0, color: AppColors.white),
+      TextSpan span = TextSpan(
+          style: TextStyle(fontWeight: FontWeight.normal, fontSize: 32.0, color: AppColors.white),
           text: arcItems[i].text);
-      TextPainter tp = new TextPainter(
+      TextPainter tp = TextPainter(
         text: span,
         textAlign: TextAlign.center,
         textDirection: TextDirection.ltr,
@@ -169,14 +169,14 @@ class ChooserPainter extends CustomPainter {
       canvas.translate(tX, tY);
       //canvas.rotate(arcItems[i].startAngle + angleInRadiansByTwo);
       canvas.rotate(arcItems[i].startAngle + angleInRadians + angleInRadians + angleInRadiansByTwo);
-      tp.paint(canvas, new Offset(0.0, 0.0));
+      tp.paint(canvas, Offset(0.0, 0.0));
       canvas.restore();
 
       isLineSelected ? _drawLines(i) : Container();
     }
 
     //shadow
-    Path shadowPath = new Path();
+    Path shadowPath = Path();
     shadowPath.addArc(Rect.fromLTRB(leftX3, topY3, rightX3, bottomY3), ChooserState.degreeToRadians(180.0),
         ChooserState.degreeToRadians(180.0));
     canvas.drawShadow(shadowPath, AppColors.black, 18.0, true);
