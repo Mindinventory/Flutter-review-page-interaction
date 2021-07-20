@@ -3,12 +3,17 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
-import 'package:review/common/app_color.dart';
 import '../model/arc_item_model.dart';
 import 'choose_painter.dart';
 
 class ArcChooser extends StatefulWidget {
   ArcSelectedCallback arcSelectedCallback;
+  List<ArcItem> arcInputs;
+  bool showLines;
+  bool shouldTransparent;
+
+  ArcChooser(
+      {this.arcInputs, this.showLines = true, this.shouldTransparent = false});
 
   @override
   State<StatefulWidget> createState() {
@@ -16,8 +21,9 @@ class ArcChooser extends StatefulWidget {
   }
 }
 
-class ChooserState extends State<ArcChooser> with SingleTickerProviderStateMixin {
-  var slideValue = 200;
+class ChooserState extends State<ArcChooser>
+    with SingleTickerProviderStateMixin {
+
   Offset centerPoint;
 
   double userAngle = 0.0;
@@ -44,6 +50,8 @@ class ChooserState extends State<ArcChooser> with SingleTickerProviderStateMixin
 
   ArcSelectedCallback arcSelectedCallback;
 
+  List<ArcItem> arcInput;
+
   ChooserState(ArcSelectedCallback arcSelectedCallback) {
     this.arcSelectedCallback = arcSelectedCallback;
   }
@@ -54,35 +62,32 @@ class ChooserState extends State<ArcChooser> with SingleTickerProviderStateMixin
 
   @override
   void initState() {
+    super.initState();
+
     arcItems = <ArcItemModel>[];
 
-    arcItems
-      ..add(ArcItemModel("Ugh", [AppColors.F9D976, AppColors.f39f86], angleInRadiansByTwo + userAngle))
-      ..add(ArcItemModel(
-          "Ok", [AppColors.c21e1fa, AppColors.c3bb8fd], angleInRadiansByTwo + userAngle + (angleInRadians)))
-      ..add(ArcItemModel("Good", [AppColors.c3ee98a, AppColors.c41f7c7],
-          angleInRadiansByTwo + userAngle + (2 * angleInRadians)))
-      ..add(ArcItemModel("Bad", [AppColors.fe0944, AppColors.feae96],
-          angleInRadiansByTwo + userAngle + (3 * angleInRadians)))
-      ..add(ArcItemModel("Ugh", [AppColors.F9D976, AppColors.f39f86],
-          angleInRadiansByTwo + userAngle + (4 * angleInRadians)))
-      ..add(ArcItemModel("Ok", [AppColors.c21e1fa, AppColors.c3bb8fd],
-          angleInRadiansByTwo + userAngle + (5 * angleInRadians)))
-      ..add(ArcItemModel("Good", [AppColors.c3ee98a, AppColors.c41f7c7],
-          angleInRadiansByTwo + userAngle + (6 * angleInRadians)))
-      ..add(ArcItemModel("Bad", [AppColors.fe0944, AppColors.feae96],
-          angleInRadiansByTwo + userAngle + (7 * angleInRadians)));
+    // To repeat the arcItem
+    arcInput = widget.arcInputs;
+    arcInput += arcInput;
 
-    animation = AnimationController(duration: const Duration(milliseconds: 200), vsync: this);
+    for (var i = 0; i < arcInput.length; i++) {
+      arcItems.add(ArcItemModel(
+          arcInput[i].title,
+          [arcInput[i].startColor, arcInput[i].endColor],
+          angleInRadiansByTwo + userAngle + (i * angleInRadians)));
+    }
+
+    animation = AnimationController(
+        duration: const Duration(milliseconds: 200), vsync: this);
     animation.addListener(() {
       userAngle = lerpDouble(animationStart, animationEnd, animation.value);
       setState(() {
         for (int i = 0; i < arcItems.length; i++) {
-          arcItems[i].startAngle = angleInRadiansByTwo + userAngle + (i * angleInRadians);
+          arcItems[i].startAngle =
+              angleInRadiansByTwo + userAngle + (i * angleInRadians);
         }
       });
     });
-    super.initState();
   }
 
   @override
@@ -110,7 +115,8 @@ class ChooserState extends State<ArcChooser> with SingleTickerProviderStateMixin
         userAngle += freshAngle - startAngle;
         setState(() {
           for (int i = 0; i < arcItems.length; i++) {
-            arcItems[i].startAngle = angleInRadiansByTwo + userAngle + (i * angleInRadians);
+            arcItems[i].startAngle =
+                angleInRadiansByTwo + userAngle + (i * angleInRadians);
           }
         });
         startAngle = freshAngle;
@@ -136,15 +142,22 @@ class ChooserState extends State<ArcChooser> with SingleTickerProviderStateMixin
         }
 
         if (arcSelectedCallback != null) {
-          arcSelectedCallback(currentPosition,
-              arcItems[(currentPosition >= (arcItems.length - 1)) ? 0 : currentPosition + 1]);
+          arcSelectedCallback(
+              currentPosition,
+              arcItems[(currentPosition >= (arcItems.length - 1))
+                  ? 0 : currentPosition + 1]);
         }
 
         animation.forward(from: 0.0);
       },
       child: CustomPaint(
-        size: Size(MediaQuery.of(context).size.width, MediaQuery.of(context).size.width * 1 / 1.5),
-        painter: ChooserPainter(arcItems: arcItems, angleInRadians: angleInRadians, isLine: true),
+        size: Size(MediaQuery.of(context).size.width,
+            MediaQuery.of(context).size.width * 1 / 1.5),
+        painter: ChooserPainter(
+            arcItems: arcItems,
+            angleInRadians: angleInRadians,
+            shouldTransparent: widget.shouldTransparent,
+            isLine: widget.showLines),
       ),
     );
   }

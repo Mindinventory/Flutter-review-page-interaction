@@ -29,6 +29,7 @@ class ChooserPainter extends CustomPainter {
     ..style = PaintingStyle.fill;
 
   bool isLineSelected = true;
+  bool shouldTransparent = false;
 
   List<ArcItemModel> arcItems;
   double angleInRadians,
@@ -38,11 +39,16 @@ class ChooserPainter extends CustomPainter {
       angleInRadians3,
       angleInRadians4;
 
-  ChooserPainter({List<ArcItemModel> arcItems, double angleInRadians, bool isLine}) {
+  ChooserPainter(
+      {List<ArcItemModel> arcItems,
+      double angleInRadians,
+      bool isLine,
+      @required bool shouldTransparent}) {
     this.arcItems = arcItems;
     this.angleInRadians = angleInRadians;
     this.angleInRadiansByTwo = angleInRadians / 2;
     this.isLineSelected = isLine;
+    this.shouldTransparent = shouldTransparent;
 
     angleInRadians1 = angleInRadians / 6;
     angleInRadians2 = angleInRadians / 3;
@@ -166,6 +172,7 @@ class ChooserPainter extends CustomPainter {
               sin(arcItems[i].startAngle + angleInRadiansByTwo - additionalAngle); // - (tp.height/2);
 
       canvas.save();
+      //if reducing the arc width then reduce tY by it's half to show the text accordingly
       canvas.translate(tX, tY);
       //canvas.rotate(arcItems[i].startAngle + angleInRadiansByTwo);
       canvas.rotate(arcItems[i].startAngle + angleInRadians + angleInRadians + angleInRadiansByTwo);
@@ -175,15 +182,22 @@ class ChooserPainter extends CustomPainter {
       isLineSelected ? _drawLines(i) : Container();
     }
 
-    //shadow
-    Path shadowPath = Path();
-    shadowPath.addArc(Rect.fromLTRB(leftX3, topY3, rightX3, bottomY3), ChooserState.degreeToRadians(180.0),
-        ChooserState.degreeToRadians(180.0));
-    canvas.drawShadow(shadowPath, AppColors.black, 18.0, true);
+    ///shadow
+    // If reducing arc width then apply the same here to show the shadow accordingly
+    if (!shouldTransparent) {
+      Path shadowPath = Path();
+      shadowPath.addArc(Rect.fromLTRB(leftX3, topY3, rightX3, bottomY3),
+          ChooserState.degreeToRadians(180.0),
+          ChooserState.degreeToRadians(180.0));
+      canvas.drawShadow(shadowPath, AppColors.black, 18.0, true);
+    }
 
-    //bottom white arc
-    canvas.drawArc(Rect.fromLTRB(leftX, topY, rightX, bottomY), ChooserState.degreeToRadians(180.0),
-        ChooserState.degreeToRadians(180.0), true, whitePaint);
+    ///bottom white arc
+    // Reduce leftX(-50) and topY(-50), and increase rightX(+50) to decrease the width of arc
+    if (!shouldTransparent) {
+      canvas.drawArc(Rect.fromLTRB(leftX, topY, rightX, bottomY), ChooserState.degreeToRadians(180.0),
+          ChooserState.degreeToRadians(180.0), true, whitePaint);
+    }
   }
 
   @override
