@@ -34,10 +34,6 @@ class _MyReviewPageState extends State<MyReviewPage>
 
     arcInput = [
       ArcItem(
-          title: 'BAD',
-          startColor: AppColors.c3ee98a,
-          endColor: AppColors.c41f7c7),
-      ArcItem(
           title: 'UGH',
           startColor: AppColors.F9D976,
           endColor: AppColors.f39f86),
@@ -47,6 +43,10 @@ class _MyReviewPageState extends State<MyReviewPage>
           endColor: AppColors.c3bb8fd),
       ArcItem(
           title: 'GOOD',
+          startColor: AppColors.c3ee98a,
+          endColor: AppColors.c41f7c7),
+      ArcItem(
+          title: 'BAD',
           startColor: AppColors.fe0944,
           endColor: AppColors.feae96),
     ];
@@ -66,30 +66,31 @@ class _MyReviewPageState extends State<MyReviewPage>
 
           double ratio;
 
+          // sets the button color
           if (slideValue <= 100) {
             ratio = animation.value / 100;
-            startColor = Color.lerp(
-                arcInput[0].startColor, arcInput[1].startColor, ratio);
-            endColor =
-                Color.lerp(arcInput[0].endColor, arcInput[1].endColor, ratio);
-          } else if (slideValue <= 200) {
-            ratio = (animation.value - 100) / 100;
-            startColor = Color.lerp(
-                arcInput[1].startColor, arcInput[2].startColor, ratio);
-            endColor =
-                Color.lerp(arcInput[1].endColor, arcInput[2].endColor, ratio);
-          } else if (slideValue <= 300) {
-            ratio = (animation.value - 200) / 100;
-            startColor = Color.lerp(
-                arcInput[2].startColor, arcInput[3].startColor, ratio);
-            endColor =
-                Color.lerp(arcInput[2].endColor, arcInput[3].startColor, ratio);
-          } else if (slideValue <= 400) {
-            ratio = (animation.value - 300) / 100;
             startColor = Color.lerp(
                 arcInput[3].startColor, arcInput[0].startColor, ratio);
             endColor =
                 Color.lerp(arcInput[3].endColor, arcInput[0].endColor, ratio);
+          } else if (slideValue <= 200) {
+            ratio = (animation.value - 100) / 100;
+            startColor = Color.lerp(
+                arcInput[0].startColor, arcInput[1].startColor, ratio);
+            endColor =
+                Color.lerp(arcInput[0].endColor, arcInput[1].endColor, ratio);
+          } else if (slideValue <= 300) {
+            ratio = (animation.value - 200) / 100;
+            startColor = Color.lerp(
+                arcInput[1].startColor, arcInput[2].startColor, ratio);
+            endColor =
+                Color.lerp(arcInput[1].endColor, arcInput[2].endColor, ratio);
+          } else if (slideValue <= 400) {
+            ratio = (animation.value - 300) / 100;
+            startColor = Color.lerp(
+                arcInput[2].startColor, arcInput[3].startColor, ratio);
+            endColor =
+                Color.lerp(arcInput[2].endColor, arcInput[3].startColor, ratio);
           }
         });
       });
@@ -115,7 +116,8 @@ class _MyReviewPageState extends State<MyReviewPage>
             ),
           ),
           CustomPaint(
-            size: Size(MediaQuery.of(context).size.width, (MediaQuery.of(context).size.width / 2) + 60),
+            size: Size(MediaQuery.of(context).size.width,
+                (MediaQuery.of(context).size.width / 2) + 60),
             painter: SmilePainter(slideValue),
           ),
           Stack(
@@ -149,7 +151,10 @@ class _MyReviewPageState extends State<MyReviewPage>
 
                   lastAnimPosition = animPosition;
                 },
-              SubmitButton(startColor: startColor,endColor: endColor,),
+              SubmitButton(
+                startColor: startColor,
+                endColor: endColor,
+              ),
             ],
           ),
         ],
