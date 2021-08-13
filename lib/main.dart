@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:review/common/app_color.dart';
+import 'file:///Users/dhruv/Projects/Flutter-review-page-interaction/expression_emoji/lib/app_color.dart';
 
 import 'review_page.dart';
 
