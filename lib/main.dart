@@ -1,9 +1,8 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:review/SmilePainter.dart';
-import 'package:review/ArcChooser.dart';
+
+import 'ArcChooser.dart';
+import 'SmilePainter.dart';
 
 void main() {
   SystemChrome.setPreferredOrientations([
@@ -14,7 +13,6 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
@@ -31,14 +29,13 @@ class MyApp extends StatelessWidget {
 }
 
 class MyReviewPage extends StatefulWidget {
-  MyReviewPage({Key key}) : super(key: key);
+  MyReviewPage({Key? key}) : super(key: key);
 
   @override
   _MyReviewPageState createState() => new _MyReviewPageState();
 }
 
-class _MyReviewPageState extends State<MyReviewPage>
-    with TickerProviderStateMixin {
+class _MyReviewPageState extends State<MyReviewPage> with TickerProviderStateMixin {
   final PageController pageControl = new PageController(
     initialPage: 2,
     keepPage: false,
@@ -48,17 +45,17 @@ class _MyReviewPageState extends State<MyReviewPage>
   int slideValue = 200;
   int lastAnimPosition = 2;
 
-  AnimationController animation;
+  late AnimationController animation;
 
-  List<ArcItem> arcItems = List<ArcItem>();
+  List<ArcItem> arcItems = [];
 
-  ArcItem badArcItem;
-  ArcItem ughArcItem;
-  ArcItem okArcItem;
-  ArcItem goodArcItem;
+  late ArcItem badArcItem;
+  late ArcItem ughArcItem;
+  late ArcItem okArcItem;
+  late ArcItem goodArcItem;
 
-  Color startColor;
-  Color endColor;
+  late Color startColor;
+  late Color endColor;
 
   @override
   void initState() {
@@ -91,28 +88,20 @@ class _MyReviewPageState extends State<MyReviewPage>
 
           if (slideValue <= 100) {
             ratio = animation.value / 100;
-            startColor =
-                Color.lerp(badArcItem.colors[0], ughArcItem.colors[0], ratio);
-            endColor =
-                Color.lerp(badArcItem.colors[1], ughArcItem.colors[1], ratio);
+            startColor = Color.lerp(badArcItem.colors[0], ughArcItem.colors[0], ratio)!;
+            endColor = Color.lerp(badArcItem.colors[1], ughArcItem.colors[1], ratio)!;
           } else if (slideValue <= 200) {
             ratio = (animation.value - 100) / 100;
-            startColor =
-                Color.lerp(ughArcItem.colors[0], okArcItem.colors[0], ratio);
-            endColor =
-                Color.lerp(ughArcItem.colors[1], okArcItem.colors[1], ratio);
+            startColor = Color.lerp(ughArcItem.colors[0], okArcItem.colors[0], ratio)!;
+            endColor = Color.lerp(ughArcItem.colors[1], okArcItem.colors[1], ratio)!;
           } else if (slideValue <= 300) {
             ratio = (animation.value - 200) / 100;
-            startColor =
-                Color.lerp(okArcItem.colors[0], goodArcItem.colors[0], ratio);
-            endColor =
-                Color.lerp(okArcItem.colors[1], goodArcItem.colors[1], ratio);
+            startColor = Color.lerp(okArcItem.colors[0], goodArcItem.colors[0], ratio)!;
+            endColor = Color.lerp(okArcItem.colors[1], goodArcItem.colors[1], ratio)!;
           } else if (slideValue <= 400) {
             ratio = (animation.value - 300) / 100;
-            startColor =
-                Color.lerp(goodArcItem.colors[0], badArcItem.colors[0], ratio);
-            endColor =
-                Color.lerp(goodArcItem.colors[1], badArcItem.colors[1], ratio);
+            startColor = Color.lerp(goodArcItem.colors[0], badArcItem.colors[0], ratio)!;
+            endColor = Color.lerp(goodArcItem.colors[1], badArcItem.colors[1], ratio)!;
           }
         });
       });
@@ -122,8 +111,7 @@ class _MyReviewPageState extends State<MyReviewPage>
 
   @override
   Widget build(BuildContext context) {
-    var textStyle = new TextStyle(
-        color: Colors.white, fontSize: 24.00, fontWeight: FontWeight.bold);
+    var textStyle = new TextStyle(color: Colors.white, fontSize: 24.00, fontWeight: FontWeight.bold);
 
     return Container(
       margin: MediaQuery.of(context).padding,
@@ -136,13 +124,11 @@ class _MyReviewPageState extends State<MyReviewPage>
               child: Text(
                 "How was your experience with us?",
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.headline,
               ),
             ),
           ),
           CustomPaint(
-            size: Size(MediaQuery.of(context).size.width,
-                (MediaQuery.of(context).size.width / 2) + 60),
+            size: Size(MediaQuery.of(context).size.width, (MediaQuery.of(context).size.width / 2) + 60),
             painter: SmilePainter(slideValue),
           ),
 //          Slider(
@@ -193,53 +179,49 @@ class _MyReviewPageState extends State<MyReviewPage>
 //              ),
 //            ),
 //          ),
-          Stack(
-              alignment: AlignmentDirectional.bottomCenter,
-              children: <Widget>[
-                ArcChooser()
-                  ..arcSelectedCallback = (int pos, ArcItem item) {
-                    int animPosition = pos - 2;
-                    if (animPosition > 3) {
-                      animPosition = animPosition - 4;
-                    }
+          Stack(alignment: AlignmentDirectional.bottomCenter, children: <Widget>[
+            ArcChooser()
+              ..arcSelectedCallback = (int pos, ArcItem item) {
+                int animPosition = pos - 2;
+                if (animPosition > 3) {
+                  animPosition = animPosition - 4;
+                }
 
-                    if (animPosition < 0) {
-                      animPosition = 4 + animPosition;
-                    }
+                if (animPosition < 0) {
+                  animPosition = 4 + animPosition;
+                }
 
-                    if (lastAnimPosition == 3 && animPosition == 0) {
-                      animation.animateTo(4 * 100.0);
-                    } else if (lastAnimPosition == 0 && animPosition == 3) {
-                      animation.forward(from: 4 * 100.0);
-                      animation.animateTo(animPosition * 100.0);
-                    } else if (lastAnimPosition == 0 && animPosition == 1) {
-                      animation.forward(from: 0.0);
-                      animation.animateTo(animPosition * 100.0);
-                    } else {
-                      animation.animateTo(animPosition * 100.0);
-                    }
+                if (lastAnimPosition == 3 && animPosition == 0) {
+                  animation.animateTo(4 * 100.0);
+                } else if (lastAnimPosition == 0 && animPosition == 3) {
+                  animation.forward(from: 4 * 100.0);
+                  animation.animateTo(animPosition * 100.0);
+                } else if (lastAnimPosition == 0 && animPosition == 1) {
+                  animation.forward(from: 0.0);
+                  animation.animateTo(animPosition * 100.0);
+                } else {
+                  animation.animateTo(animPosition * 100.0);
+                }
 
-                    lastAnimPosition = animPosition;
-                  },
-                Padding(
-                  padding: const EdgeInsets.all(28.0),
-                  child: Material(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(25.0)),
-                    elevation: 8.0,
-                    child: Container(
-                        width: 150.0,
-                        height: 50.0,
-                        decoration: BoxDecoration(
-                          gradient:
-                              LinearGradient(colors: [startColor, endColor]),
-                        ),
-                        alignment: Alignment.center,
-                        child: Text(
-                          'SUBMIT',
-                          style: textStyle,
-                        )),
-                  ),
+                lastAnimPosition = animPosition;
+              },
+            Padding(
+              padding: const EdgeInsets.all(28.0),
+              child: Material(
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25.0)),
+                elevation: 8.0,
+                child: Container(
+                    width: 150.0,
+                    height: 50.0,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(colors: [startColor, endColor]),
+                    ),
+                    alignment: Alignment.center,
+                    child: Text(
+                      'SUBMIT',
+                      style: textStyle,
+                    )),
+              ),
 //              child: RaisedButton(
 //                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
 //                child: Text('SUBMIT'),
@@ -247,8 +229,8 @@ class _MyReviewPageState extends State<MyReviewPage>
 //                  print('cool');
 //                },
 //              ),
-                )
-              ]),
+            )
+          ]),
         ],
       ),
     );

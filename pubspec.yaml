@@ -1,19 +1,23 @@
 name: review
 description: An innovative review page.
 
+environment:
+  sdk: '>=3.2.1 <4.0.0'
+  flutter: ">=1.17.0"
+
 dependencies:
   flutter:
     sdk: flutter
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^0.1.2
+  cupertino_icons:
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  flutter_launcher_icons: "^0.4.0"
+  flutter_launcher_icons:
 
 flutter_icons:
   image_path: "/home/dhruv/StudioProjects/review/ic_launcher/web_hi_res_512.png"
